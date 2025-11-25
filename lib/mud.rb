@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "mud/version"
+require_relative 'mud/version'
 
 module Mud
   class Error < StandardError; end
