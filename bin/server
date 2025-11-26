@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'bundler/setup'
+require 'mud'
+
+port = ENV.fetch('PORT', 4000).to_i
+server = Mud::Network::Server.new(port: port)
+
+# Trap signals
+%w[INT TERM].each do |signal|
+  trap(signal) do
+    Thread.new { server.stop }.join
+    exit
+  end
+end
+
+server.start

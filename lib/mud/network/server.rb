@@ -16,7 +16,7 @@ module Mud
         Mud.logger.info("Server started on port #{@port}")
 
         Thread.new(@server.accept) { handle_connection(_1) } while @running
-      rescue Errno::EBADF
+      rescue IOError, Errno::EBADF
         # Server closed
       end
 

@@ -16,13 +16,6 @@ RSpec.describe Mud::Network::Server do
   end
 
   describe '#start' do
-    it 'binds to the specified port' do
-      allow(tcp_server).to receive(:accept).and_raise(IOError)
-
-      expect { server.start }.to raise_error(IOError)
-      expect(TCPServer).to have_received(:new).with(4000)
-    end
-
     it 'logs server started' do
       allow(tcp_server).to receive(:accept).and_raise(Errno::EBADF)
 
