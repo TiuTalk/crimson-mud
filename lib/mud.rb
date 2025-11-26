@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative 'mud/version'
-require_relative 'mud/network/client'
-require_relative 'mud/network/server'
+require 'zeitwerk'
+
+loader = Zeitwerk::Loader.for_gem
+loader.setup
 
 module Mud
   class Error < StandardError; end
-  # Your code goes here...
 end
