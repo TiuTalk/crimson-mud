@@ -8,6 +8,25 @@ AllCops:
   TargetRubyVersion: 3.2
   SuggestExtensions: false
 
+Style/HashSyntax:
+  EnforcedShorthandSyntax: always
+
+Layout/CaseIndentation:
+  EnforcedStyle: end
+  IndentOneStep: true
+
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: start_of_line
+
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Layout/ElseAlignment:
+  Enabled: false
+
 Style/Documentation:
   Enabled: false
 
