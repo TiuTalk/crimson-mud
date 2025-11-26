@@ -30,14 +30,20 @@ module Mud
         # Client disconnected, ignore
       end
 
+      def gets
+        @socket.gets
+      rescue IOError, Errno::EPIPE
+        nil
+      end
+
       private
 
       def welcome
-        @socket.puts('Welcome to Crimson MUD!')
+        puts('Welcome to Crimson MUD!')
 
         loop do
-          @socket.puts('What is your name?')
-          input = @socket.gets&.strip
+          puts('What is your name?')
+          input = gets&.strip
 
           return if input.nil? # Stop if client disconnects
           next unless valid_name?(input) # Retry on invalid name
@@ -48,9 +54,9 @@ module Mud
       end
 
       def listen
-        while (line = @socket.gets)
+        while (line = gets)
           message = line.chomp
-          @socket.puts("You say, '#{message}'")
+          puts("You say, '#{message}'")
           @server.broadcast("#{@name} says, '#{message}'", except: self)
         end
       end

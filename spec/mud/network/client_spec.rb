@@ -125,4 +125,24 @@ RSpec.describe Mud::Network::Client do
       expect { client.puts('hello') }.not_to raise_error
     end
   end
+
+  describe '#gets' do
+    it 'delegates to socket' do
+      allow(socket).to receive(:gets).and_return("hello\n")
+
+      expect(client.gets).to eq("hello\n")
+    end
+
+    it 'returns nil on IOError from closed socket' do
+      allow(socket).to receive(:gets).and_raise(IOError)
+
+      expect(client.gets).to be_nil
+    end
+
+    it 'returns nil on Errno::EPIPE from broken pipe' do
+      allow(socket).to receive(:gets).and_raise(Errno::EPIPE)
+
+      expect(client.gets).to be_nil
+    end
+  end
 end
