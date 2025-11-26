@@ -5,9 +5,13 @@ require 'socket'
 module Mud
   module Network
     class Server
+      attr_reader :clients
+
       def initialize(port:)
         @port = port
         @running = false
+        @clients = Set.new
+        @mutex = Mutex.new
       end
 
       def start
@@ -28,10 +32,22 @@ module Mud
         @server&.close
       end
 
+      def add_client(client)
+        @mutex.synchronize { @clients.add(client) }
+      end
+
+      def remove_client(client)
+        @mutex.synchronize { @clients.delete(client) }
+      end
+
+      def broadcast(message)
+        @mutex.synchronize { @clients.to_a }.each { _1.puts(message) }
+      end
+
       private
 
       def handle_connection(socket)
-        Client.new(socket).handle
+        Client.new(socket:, server: self).handle
       end
     end
   end

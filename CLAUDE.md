@@ -31,9 +31,10 @@ bundle exec rubocop --autocorrect-all
 ## Architecture
 
 - Ruby 3.2+
-- Zeitwerk autoloading (files in `lib/mud/` auto-require)
-- `lib/mud.rb` - Entry point, `Mud` module
-- `lib/mud/network/` - TCP networking
+- Zeitwerk autoloading
+- `lib/mud.rb` - Entry point, `Mud` module with logger
+- `lib/mud/network/server.rb` - TCP server, manages clients, broadcasts messages
+- `lib/mud/network/client.rb` - Handles single client connection
 - `spec/` - RSpec tests mirroring lib structure
 
 ## Design Principles

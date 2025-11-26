@@ -46,11 +46,46 @@ RSpec.describe Mud::Network::Server do
   describe '#handle_connection' do
     before { allow(Mud::Network::Client).to receive(:new).and_return(client) }
 
-    it 'creates Client with socket and calls handle' do
+    it 'creates Client with socket and server, calls handle' do
       server.send(:handle_connection, socket)
 
-      expect(Mud::Network::Client).to have_received(:new).with(socket)
+      expect(Mud::Network::Client).to have_received(:new).with(socket:, server:)
       expect(client).to have_received(:handle)
+    end
+  end
+
+  describe '#add_client' do
+    it 'adds client to clients set' do
+      server.add_client(client)
+
+      expect(server.clients).to include(client)
+    end
+  end
+
+  describe '#remove_client' do
+    before { server.add_client(client) }
+
+    it 'removes client from clients set' do
+      server.remove_client(client)
+
+      expect(server.clients).not_to include(client)
+    end
+  end
+
+  describe '#broadcast' do
+    let(:alice) { instance_double(Mud::Network::Client, puts: nil) }
+    let(:bob) { instance_double(Mud::Network::Client, puts: nil) }
+
+    before do
+      server.add_client(alice)
+      server.add_client(bob)
+    end
+
+    it 'sends message to all registered clients' do
+      server.broadcast('hello')
+
+      expect(alice).to have_received(:puts).with('hello')
+      expect(bob).to have_received(:puts).with('hello')
     end
   end
 end
