@@ -16,6 +16,14 @@
 #
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
+if ENV['CI'] || ENV['COVERAGE']
+  require 'simplecov'
+
+  SimpleCov.start do
+    minimum_coverage 100
+  end
+end
+
 require 'mud'
 
 RSpec.configure do |config|

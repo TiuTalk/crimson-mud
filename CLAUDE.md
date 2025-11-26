@@ -16,11 +16,10 @@ bin/setup
 bundle exec rspec --format progress
 bundle exec rspec --format progress spec/path/to/spec.rb
 bundle exec rspec --format progress spec/path/to/spec.rb:42
+COVERAGE=1 bundle exec rspec --format progress # Run tests with coverage
 
-# Lint
+# Linters
 bundle exec rubocop
-
-# Lint with auto-fix
 bundle exec rubocop --autocorrect-all
 ```
 
