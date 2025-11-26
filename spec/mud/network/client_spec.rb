@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Mud::Network::Client do
   subject(:client) { described_class.new(socket:, server:) }
 
-  let(:socket) { instance_double(TCPSocket, puts: nil, close: nil, peeraddr:) }
-  let(:peeraddr) { ['AF_INET', 1234, 'localhost', '192.168.1.100'] }
+  let(:socket) { instance_double(TCPSocket, puts: nil, close: nil, remote_address:) }
+  let(:remote_address) { instance_double(Addrinfo, ip_address: '192.168.1.100') }
   let(:server) { instance_double(Mud::Network::Server, add_client: nil, remove_client: nil, broadcast: nil) }
 
   describe '#handle' do
@@ -81,6 +81,14 @@ RSpec.describe Mud::Network::Client do
       expect(socket).to have_received(:close)
     end
 
+    it 'uses default name when client disconnects before providing one' do
+      allow(socket).to receive(:gets).and_return(nil)
+
+      client.handle
+
+      expect(Mud.logger).to have_received(:info).with('Visitor disconnected (192.168.1.100)')
+    end
+
     context 'when receiving messages' do
       before { allow(socket).to receive(:gets).and_return("Alice\n", "hello\n", nil) }
 
@@ -103,6 +111,18 @@ RSpec.describe Mud::Network::Client do
       client.puts('hello')
 
       expect(socket).to have_received(:puts).with('hello')
+    end
+
+    it 'silently ignores IOError from closed socket' do
+      allow(socket).to receive(:puts).and_raise(IOError)
+
+      expect { client.puts('hello') }.not_to raise_error
+    end
+
+    it 'silently ignores Errno::EPIPE from broken pipe' do
+      allow(socket).to receive(:puts).and_raise(Errno::EPIPE)
+
+      expect { client.puts('hello') }.not_to raise_error
     end
   end
 end

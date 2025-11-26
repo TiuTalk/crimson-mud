@@ -10,6 +10,7 @@ module Mud
       def initialize(socket:, server:)
         @socket = socket
         @server = server
+        @name = 'Visitor'
       end
 
       def handle
@@ -25,6 +26,8 @@ module Mud
 
       def puts(message)
         @socket.puts(message)
+      rescue IOError, Errno::EPIPE
+        # Client disconnected, ignore
       end
 
       private
@@ -57,7 +60,7 @@ module Mud
       end
 
       def ip_address
-        @socket.peeraddr[3]
+        @socket.remote_address.ip_address
       end
     end
   end
