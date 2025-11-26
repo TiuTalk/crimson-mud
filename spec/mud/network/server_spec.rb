@@ -5,16 +5,17 @@ require 'spec_helper'
 RSpec.describe Mud::Network::Server do
   subject(:server) { described_class.new(port: 4000) }
 
-  let(:tcp_server) { instance_double(TCPServer) }
+  let(:tcp_server) { instance_double(TCPServer, close: nil) }
   let(:socket) { instance_double(TCPSocket) }
   let(:client) { instance_double(Mud::Network::Client, handle: nil) }
+  let(:logger) { instance_double(Logger, info: nil) }
+
+  before do
+    allow(TCPServer).to receive(:new).and_return(tcp_server)
+    allow(Mud).to receive(:logger).and_return(logger)
+  end
 
   describe '#start' do
-    before do
-      allow(TCPServer).to receive(:new).and_return(tcp_server)
-      allow(Mud.logger).to receive(:info)
-    end
-
     it 'binds to the specified port' do
       allow(tcp_server).to receive(:accept).and_raise(IOError)
 
@@ -27,17 +28,12 @@ RSpec.describe Mud::Network::Server do
 
       server.start
 
-      expect(Mud.logger).to have_received(:info).with('Server started on port 4000')
+      expect(logger).to have_received(:info).with('Server started on port 4000')
     end
   end
 
   describe '#stop' do
-    before do
-      allow(TCPServer).to receive(:new).and_return(tcp_server)
-      allow(tcp_server).to receive(:accept).and_raise(Errno::EBADF)
-      allow(tcp_server).to receive(:close)
-      allow(Mud.logger).to receive(:info)
-    end
+    before { allow(tcp_server).to receive(:accept).and_raise(Errno::EBADF) }
 
     it 'closes the server socket' do
       server.start
@@ -50,7 +46,7 @@ RSpec.describe Mud::Network::Server do
       server.start
       server.stop
 
-      expect(Mud.logger).to have_received(:info).with('Server stopped')
+      expect(logger).to have_received(:info).with('Server stopped')
     end
   end
 
