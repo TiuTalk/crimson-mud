@@ -1,0 +1,59 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project
+
+MUD (multi-user dungeon) server written in Ruby. Packaged as a gem.
+
+## Commands
+
+```bash
+# Install dependencies
+bin/setup
+
+# Run tests
+bundle exec rspec
+
+# Run single test file
+bundle exec rspec spec/path/to/spec.rb
+
+# Run single test by line
+bundle exec rspec spec/path/to/spec.rb:42
+
+# Lint
+bundle exec rubocop
+
+# Lint with auto-fix
+bundle exec rubocop --autocorrect-all
+```
+
+## Architecture
+
+- Ruby 3.2+
+- `lib/mud.rb` - Main entry point, defines `Mud` module
+- `lib/mud/` - Module components
+- `spec/` - RSpec tests mirroring lib structure
+
+## Design Principles
+
+### Core
+- **SRP (Single Responsibility)** - One reason to change per class/module
+- **OCP (Open/Closed)** - Extend via composition, not modification
+- **YAGNI (You Ain't Gonna Need It)** - Don't build until needed
+- **DRY (Don't Repeat Yourself)** - Extract only after 3+ duplications
+- **KISS (Keep It Simple, Stupid)** - Simplest solution that works
+
+### Ruby Idioms
+- **Composition over Inheritance** - Prefer modules and delegation
+- **Tell, Don't Ask** - Command objects to act, don't query then decide
+- **Law of Demeter** - Only talk to immediate collaborators
+
+## TDD (Test-Driven Development)
+
+TDD is required for all new code and when updating existing code, if feasible.
+
+- **Red-Green-Refactor** - Write failing spec → make it pass → refactor
+- **Smallest Change** - Minimal code to pass each test
+- **One Failing Test** - Don't write multiple failing specs before implementing
+- **Test Public Behavior** - Test public interface, not implementation details
