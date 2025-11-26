@@ -10,11 +10,19 @@ module Mud
       end
 
       def handle
+        Mud.logger.info("Client [#{ip_address}] connected")
         while (line = @socket.gets)
           @socket.puts(line)
         end
       ensure
+        Mud.logger.info("Client [#{ip_address}] disconnected")
         @socket.close
+      end
+
+      private
+
+      def ip_address
+        @socket.peeraddr[3]
       end
     end
   end
