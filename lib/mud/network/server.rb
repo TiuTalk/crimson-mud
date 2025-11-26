@@ -7,16 +7,25 @@ module Mud
     class Server
       def initialize(port:)
         @port = port
+        @running = false
       end
 
       def start
-        server = TCPServer.new(@port)
+        @running = true
+        @server = TCPServer.new(@port)
+        Mud.logger.info("Server started on port #{@port}")
 
-        loop do
-          Thread.new(server.accept) do |socket|
-            handle_connection(socket)
-          end
-        end
+        Thread.new(@server.accept) { handle_connection(_1) } while @running
+      rescue Errno::EBADF
+        # Server closed
+      end
+
+      def stop
+        return unless @running
+
+        Mud.logger.info('Server stopped')
+        @running = false
+        @server&.close
       end
 
       private
