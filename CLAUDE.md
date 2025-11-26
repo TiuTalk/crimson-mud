@@ -57,3 +57,8 @@ TDD is required for all new code and when updating existing code, if feasible.
 - **Smallest Change** - Minimal code to pass each test
 - **One Failing Test** - Don't write multiple failing specs before implementing
 - **Test Public Behavior** - Test public interface, not implementation details
+
+### Testing
+
+- Don't manually test servers/networking - rely on specs
+- Avoid background processes that require cleanup
