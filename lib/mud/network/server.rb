@@ -16,7 +16,7 @@ module Mud
 
       def start
         @running = true
-        @server = TCPServer.new(@port)
+        @server = TCPServer.new('::', @port)
         Mud.logger.info("Server started on port #{@port}")
 
         Thread.new(@server.accept) { handle_connection(_1) } while @running
@@ -40,8 +40,8 @@ module Mud
         @mutex.synchronize { @clients.delete(client) }
       end
 
-      def broadcast(message)
-        @mutex.synchronize { @clients.to_a }.each { _1.puts(message) }
+      def broadcast(message, except: nil)
+        @mutex.synchronize { @clients.to_a }.each { _1.puts(message) unless _1 == except }
       end
 
       private

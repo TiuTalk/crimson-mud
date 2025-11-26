@@ -13,13 +13,9 @@ MUD (multi-user dungeon) server written in Ruby. Packaged as a gem.
 bin/setup
 
 # Run tests
-bundle exec rspec
-
-# Run single test file
-bundle exec rspec spec/path/to/spec.rb
-
-# Run single test by line
-bundle exec rspec spec/path/to/spec.rb:42
+bundle exec rspec --format progress
+bundle exec rspec --format progress spec/path/to/spec.rb
+bundle exec rspec --format progress spec/path/to/spec.rb:42
 
 # Lint
 bundle exec rubocop

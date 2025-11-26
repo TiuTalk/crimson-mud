@@ -87,5 +87,12 @@ RSpec.describe Mud::Network::Server do
       expect(alice).to have_received(:puts).with('hello')
       expect(bob).to have_received(:puts).with('hello')
     end
+
+    it 'skips excepted client' do
+      server.broadcast('hello', except: alice)
+
+      expect(alice).not_to have_received(:puts)
+      expect(bob).to have_received(:puts).with('hello')
+    end
   end
 end

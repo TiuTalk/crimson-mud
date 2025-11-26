@@ -11,7 +11,7 @@ RSpec.describe Mud::Network::Client do
 
   describe '#handle' do
     before do
-      allow(socket).to receive(:gets).and_return(nil)
+      allow(socket).to receive(:gets).and_return("Alice\n", nil)
       allow(Mud.logger).to receive(:info)
     end
 
@@ -27,25 +27,50 @@ RSpec.describe Mud::Network::Client do
       expect(server).to have_received(:remove_client).with(client)
     end
 
-    it 'logs client connected with IP' do
+    it 'sends welcome message' do
       client.handle
 
-      expect(Mud.logger).to have_received(:info).with('Client [192.168.1.100] connected')
+      expect(socket).to have_received(:puts).with('Welcome to Crimson MUD!')
     end
 
-    it 'logs client disconnected with IP' do
+    it 'prompts for name' do
       client.handle
 
-      expect(Mud.logger).to have_received(:info).with('Client [192.168.1.100] disconnected')
+      expect(socket).to have_received(:puts).with('What is your name?')
     end
 
-    it 'broadcasts messages with IP prefix' do
-      allow(socket).to receive(:gets).and_return("hello\n", "world\n", nil)
+    it 'stores name' do
+      client.handle
+
+      expect(client.name).to eq('Alice')
+    end
+
+    it 'logs connected with name' do
+      client.handle
+
+      expect(Mud.logger).to have_received(:info).with('Alice connected (192.168.1.100)')
+    end
+
+    it 'logs disconnected with name' do
+      client.handle
+
+      expect(Mud.logger).to have_received(:info).with('Alice disconnected (192.168.1.100)')
+    end
+
+    it 're-prompts on empty name' do
+      allow(socket).to receive(:gets).and_return("\n", "Alice\n", nil)
 
       client.handle
 
-      expect(server).to have_received(:broadcast).with('[192.168.1.100] hello').ordered
-      expect(server).to have_received(:broadcast).with('[192.168.1.100] world').ordered
+      expect(socket).to have_received(:puts).with('What is your name?').twice
+    end
+
+    it 're-prompts on whitespace-only name' do
+      allow(socket).to receive(:gets).and_return("   \n", "Alice\n", nil)
+
+      client.handle
+
+      expect(socket).to have_received(:puts).with('What is your name?').twice
     end
 
     it 'closes socket on disconnect' do
@@ -54,6 +79,22 @@ RSpec.describe Mud::Network::Client do
       client.handle
 
       expect(socket).to have_received(:close)
+    end
+
+    context 'when receiving messages' do
+      before { allow(socket).to receive(:gets).and_return("Alice\n", "hello\n", nil) }
+
+      it 'sends "You say" to self' do
+        client.handle
+
+        expect(socket).to have_received(:puts).with("You say, 'hello'")
+      end
+
+      it 'broadcasts "Name says" to others' do
+        client.handle
+
+        expect(server).to have_received(:broadcast).with("Alice says, 'hello'", except: client)
+      end
     end
   end
 
