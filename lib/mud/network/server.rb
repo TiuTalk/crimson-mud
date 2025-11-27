@@ -11,7 +11,7 @@ module Mud
       attr_reader :players
 
       def initialize
-        @port = 4000
+        @port = Mud.configuration.port
         @running = false
         @players = Set.new
         @mutex = Mutex.new

@@ -25,7 +25,7 @@ RSpec.describe Mud::Network::Server do
     it 'logs server started' do
       allow(tcp_server).to receive(:accept).and_raise(Errno::EBADF)
       server.start
-      expect(logger).to have_received(:info).with('Server started on port 4000')
+      expect(logger).to have_received(:info).with('Server started on port 4001')
     end
   end
 

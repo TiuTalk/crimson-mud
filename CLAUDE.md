@@ -27,7 +27,8 @@ bundle exec rubocop --autocorrect-all
 
 - Ruby 3.2+
 - Zeitwerk autoloading
-- `lib/mud.rb` - Entry point, `Mud` module with logger
+- `lib/mud.rb` - Entry point, `Mud` module with configuration and logger
+- `lib/mud/configuration.rb` - Configuration object
 - `lib/mud/network/server.rb` - TCP server, manages clients, broadcasts messages
 - `lib/mud/network/client.rb` - Handles single client connection
 - `lib/mud/player.rb` - Player entity, wraps client with name/identity

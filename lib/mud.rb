@@ -10,10 +10,16 @@ module Mud
   class Error < StandardError; end
 
   class << self
-    attr_writer :logger
+    def configuration
+      @configuration ||= Configuration.new
+    end
+
+    def configure
+      yield configuration
+    end
 
     def logger
-      @logger ||= Logger.new($stdout)
+      configuration.logger
     end
   end
 end

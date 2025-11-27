@@ -26,6 +26,11 @@ end
 
 require 'mud'
 
+Mud.configure do |config|
+  config.logger = Logger.new(File::NULL)
+  config.port = 4001
+end
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

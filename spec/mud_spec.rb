@@ -5,17 +5,17 @@ RSpec.describe Mud do
     expect(Mud::VERSION).not_to be_nil
   end
 
-  describe '.logger' do
-    after { described_class.logger = nil }
+  describe '.configuration' do
+    it { expect(described_class.configuration).to be_a(Mud::Configuration) }
 
-    it 'returns a Logger instance' do
-      expect(described_class.logger).to be_a(Logger)
+    it 'returns same instance' do
+      expect(described_class.configuration).to equal(described_class.configuration)
     end
+  end
 
-    it 'allows setting a custom logger' do
-      custom = Logger.new(nil)
-      described_class.logger = custom
-      expect(described_class.logger).to eq(custom)
+  describe '.logger' do
+    it 'delegates to configuration' do
+      expect(described_class.logger).to equal(described_class.configuration.logger)
     end
   end
 end
