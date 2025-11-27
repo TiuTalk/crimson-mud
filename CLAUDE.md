@@ -30,6 +30,7 @@ bundle exec rubocop --autocorrect-all
 - `lib/mud.rb` - Entry point, `Mud` module with logger
 - `lib/mud/network/server.rb` - TCP server, manages clients, broadcasts messages
 - `lib/mud/network/client.rb` - Handles single client connection
+- `lib/mud/player.rb` - Player entity, wraps client with name/identity
 - `spec/` - RSpec tests mirroring lib structure
 
 ## Design Principles
