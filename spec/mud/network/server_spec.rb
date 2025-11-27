@@ -3,16 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe Mud::Network::Server do
-  subject(:server) { described_class.new(port: 4000) }
+  subject(:server) { described_class.instance }
 
-  let(:tcp_server) { instance_double(TCPServer, close: nil) }
-  let(:socket) { instance_double(TCPSocket) }
-  let(:client) { instance_double(Mud::Network::Client, puts: nil, gets: nil, close: nil, ip_address: '192.168.1.100') }
   let(:logger) { instance_double(Logger, info: nil) }
+  let(:client) { instance_double(Mud::Network::Client, puts: nil, gets: nil, close: nil, ip_address: '192.168.1.100') }
+  let(:socket) { instance_double(TCPSocket) }
+  let(:tcp_server) { instance_double(TCPServer, close: nil) }
+
+  after { server.players.clear }
 
   before do
     allow(TCPServer).to receive(:new).and_return(tcp_server)
     allow(Mud).to receive(:logger).and_return(logger)
+  end
+
+  describe '.instance' do
+    it { is_expected.to equal(described_class.instance) }
   end
 
   describe '#start' do

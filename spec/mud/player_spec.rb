@@ -42,4 +42,33 @@ RSpec.describe Mud::Player do
       expect(player.ip_address).to eq('192.168.1.100')
     end
   end
+
+  describe '#say' do
+    let(:server) { instance_double(Mud::Network::Server, broadcast: nil) }
+
+    before { allow(Mud::Network::Server).to receive(:instance).and_return(server) }
+
+    it 'sends formatted message to self' do
+      player.say('hello')
+      expect(client).to have_received(:puts).with("You say, 'hello'")
+    end
+
+    it 'broadcasts to others' do
+      player.say('hello')
+      expect(server).to have_received(:broadcast).with("Alice says, 'hello'", except: player)
+    end
+  end
+
+  describe '#run' do
+    let(:server) { instance_double(Mud::Network::Server, broadcast: nil) }
+
+    before { allow(Mud::Network::Server).to receive(:instance).and_return(server) }
+
+    it 'reads input and calls say until disconnect' do
+      allow(client).to receive(:gets).and_return("hello\n", "world\n", nil)
+      player.run
+      expect(client).to have_received(:puts).with("You say, 'hello'")
+      expect(client).to have_received(:puts).with("You say, 'world'")
+    end
+  end
 end

@@ -1,14 +1,17 @@
 # frozen_string_literal: true
 
+require 'singleton'
 require 'socket'
 
 module Mud
   module Network
     class Server
+      include Singleton
+
       attr_reader :players
 
-      def initialize(port:)
-        @port = port
+      def initialize
+        @port = 4000
         @running = false
         @players = Set.new
         @mutex = Mutex.new
@@ -53,7 +56,7 @@ module Mud
 
         add_player(player)
         Mud.logger.info("#{player.name} connected (#{player.ip_address})")
-        listen(player)
+        player.run
       ensure
         remove_player(player) if player
         Mud.logger.info("#{player&.name || 'Visitor'} disconnected (#{client.ip_address})")
@@ -69,14 +72,6 @@ module Mud
 
           return nil if input.nil?
           return Player.new(name: input, client:) if valid_name?(input)
-        end
-      end
-
-      def listen(player)
-        while (line = player.gets)
-          message = line.chomp
-          player.puts("You say, '#{message}'")
-          broadcast("#{player.name} says, '#{message}'", except: player)
         end
       end
 

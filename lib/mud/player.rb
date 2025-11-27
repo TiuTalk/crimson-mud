@@ -15,5 +15,18 @@ module Mud
       @name = name
       @client = client
     end
+
+    # TODO: Implement command parsing/handler
+    def run
+      while (line = gets)
+        say(line.chomp)
+      end
+    end
+
+    # TODO: Move to command class
+    def say(message)
+      puts("You say, '#{message}'")
+      Network::Server.instance.broadcast("#{name} says, '#{message}'", except: self)
+    end
   end
 end
