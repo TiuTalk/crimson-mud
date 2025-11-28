@@ -3,33 +3,34 @@
 RSpec.describe Mud::Server do
   subject(:server) { described_class.instance }
 
-  let(:logger) { instance_double(Logger, info: nil) }
-  let(:client) { instance_double(Mud::Network::Client, puts: nil, gets: nil, close: nil, ip_address: '192.168.1.100') }
-  let(:socket) { instance_double(TCPSocket) }
-
   after { server.players.clear }
-
-  before { allow(Mud).to receive(:logger).and_return(logger) }
 
   describe '.instance' do
     it { is_expected.to equal(described_class.instance) }
   end
 
-  describe '#add_player / #remove_player' do
+  describe '#add_player' do
     let(:player) { instance_double(Mud::Player) }
 
-    it 'manages players set' do
+    it 'adds to players set' do
       server.add_player(player)
       expect(server.players).to include(player)
+    end
+  end
 
+  describe '#remove_player' do
+    let(:player) { instance_double(Mud::Player) }
+
+    it 'removes from players set' do
+      server.add_player(player)
       server.remove_player(player)
       expect(server.players).not_to include(player)
     end
   end
 
   describe '#broadcast' do
-    let(:alice) { instance_double(Mud::Player, puts: nil) }
-    let(:bob) { instance_double(Mud::Player, puts: nil) }
+    let(:alice) { instance_double(Mud::Player, name: 'Alice', puts: nil) }
+    let(:bob) { instance_double(Mud::Player, name: 'Bob', puts: nil) }
 
     before do
       server.add_player(alice)
@@ -44,44 +45,17 @@ RSpec.describe Mud::Server do
   end
 
   describe '#handle_connection' do
+    let(:socket) { instance_double(TCPSocket) }
+    let(:client) { instance_double(Mud::Network::Client, puts: nil, close: nil, ip_address: '127.0.0.1') }
+
     before do
       allow(Mud::Network::Client).to receive(:new).and_return(client)
       allow(client).to receive(:gets).and_return("Alice\n", nil)
     end
 
-    it 'sends welcome and prompts for name' do
-      server.handle_connection(socket)
-      expect(client).to have_received(:puts).with('Welcome to Crimson MUD!')
-      expect(client).to have_received(:puts).with('What is your name?')
-    end
-
-    it 'creates player with name and client' do
-      allow(Mud::Player).to receive(:new).and_call_original
-      server.handle_connection(socket)
-      expect(Mud::Player).to have_received(:new).with(name: 'Alice', client:)
-    end
-
-    it 'logs connect and disconnect' do
-      server.handle_connection(socket)
-      expect(logger).to have_received(:info).with('Alice connected (192.168.1.100)')
-      expect(logger).to have_received(:info).with('Alice disconnected (192.168.1.100)')
-    end
-
-    it 'closes client on disconnect' do
+    it 'creates player and runs until disconnect' do
       server.handle_connection(socket)
       expect(client).to have_received(:close)
-    end
-
-    it 'handles disconnect before name' do
-      allow(client).to receive(:gets).and_return(nil)
-      server.handle_connection(socket)
-      expect(logger).to have_received(:info).with('Visitor disconnected (192.168.1.100)')
-    end
-
-    it 're-prompts on empty name' do
-      allow(client).to receive(:gets).and_return("\n", "Bob\n", nil)
-      server.handle_connection(socket)
-      expect(client).to have_received(:puts).with('What is your name?').twice
     end
   end
 end

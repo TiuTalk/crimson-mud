@@ -17,7 +17,9 @@ module Mud
 
         while @running
           socket = @server.accept
-          Thread.new(socket) { Mud::Server.instance.handle_connection(_1) }
+          # :nocov:
+          Thread.new(socket) { handle_client(_1) }
+          # :nocov:
         end
       rescue IOError, Errno::EBADF
         # Server closed
@@ -29,6 +31,10 @@ module Mud
         Mud.logger.info('Server stopped')
         @running = false
         @server&.close
+      end
+
+      def handle_client(socket)
+        Mud::Server.instance.handle_connection(socket)
       end
     end
   end

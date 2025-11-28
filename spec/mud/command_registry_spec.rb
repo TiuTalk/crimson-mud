@@ -11,7 +11,7 @@ RSpec.describe Mud::CommandRegistry do
     end
 
     it 'downcases command name' do
-      expect(described_class.parse('SAY hello')).to eq(['say', 'hello'])
+      expect(described_class.parse('SAY hello')).to eq(%w[say hello])
     end
 
     it 'returns empty string for args when none given' do

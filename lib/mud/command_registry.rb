@@ -9,12 +9,12 @@ module Mud
 
     def self.execute(input, player:)
       name, args = parse(input)
-      command_class = COMMANDS.fetch(name, Commands::Unknown)
+      command_class = COMMANDS[name]
 
-      if command_class == Commands::Unknown
-        command_class.new(player:, args:, name:).execute
-      else
+      if command_class
         command_class.new(player:, args:).execute
+      else
+        player.puts("Unknown command: #{name}")
       end
     end
 
