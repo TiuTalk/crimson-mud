@@ -26,7 +26,7 @@ module Mud
     # TODO: Move to command class
     def say(message)
       puts("You say, '#{message}'")
-      Network::Server.instance.broadcast("#{name} says, '#{message}'", except: self)
+      Server.instance.broadcast("#{name} says, '#{message}'", except: self)
     end
   end
 end

@@ -44,9 +44,9 @@ RSpec.describe Mud::Player do
   end
 
   describe '#say' do
-    let(:server) { instance_double(Mud::Network::Server, broadcast: nil) }
+    let(:server) { instance_double(Mud::Server, broadcast: nil) }
 
-    before { allow(Mud::Network::Server).to receive(:instance).and_return(server) }
+    before { allow(Mud::Server).to receive(:instance).and_return(server) }
 
     it 'sends formatted message to self' do
       player.say('hello')
@@ -60,9 +60,9 @@ RSpec.describe Mud::Player do
   end
 
   describe '#run' do
-    let(:server) { instance_double(Mud::Network::Server, broadcast: nil) }
+    let(:server) { instance_double(Mud::Server, broadcast: nil) }
 
-    before { allow(Mud::Network::Server).to receive(:instance).and_return(server) }
+    before { allow(Mud::Server).to receive(:instance).and_return(server) }
 
     it 'reads input and calls say until disconnect' do
       allow(client).to receive(:gets).and_return("hello\n", "world\n", nil)
