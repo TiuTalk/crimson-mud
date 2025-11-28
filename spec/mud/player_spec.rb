@@ -29,10 +29,14 @@ RSpec.describe Mud::Player do
     end
   end
 
-  describe '#disconnect' do
-    it 'closes client' do
-      player.disconnect
+  describe '#quit' do
+    it 'sends goodbye message' do
+      player.quit
+      expect(client).to have_received(:puts).with('Goodbye!')
+    end
 
+    it 'closes client' do
+      player.quit
       expect(client).to have_received(:close)
     end
   end
@@ -43,32 +47,17 @@ RSpec.describe Mud::Player do
     end
   end
 
-  describe '#say' do
-    let(:server) { instance_double(Mud::Server, broadcast: nil) }
-
-    before { allow(Mud::Server).to receive(:instance).and_return(server) }
-
-    it 'sends formatted message to self' do
-      player.say('hello')
-      expect(client).to have_received(:puts).with("You say, 'hello'")
-    end
-
-    it 'broadcasts to others' do
-      player.say('hello')
-      expect(server).to have_received(:broadcast).with("Alice says, 'hello'", except: player)
-    end
-  end
-
   describe '#run' do
-    let(:server) { instance_double(Mud::Server, broadcast: nil) }
-
-    before { allow(Mud::Server).to receive(:instance).and_return(server) }
-
-    it 'reads input and calls say until disconnect' do
-      allow(client).to receive(:gets).and_return("hello\n", "world\n", nil)
+    it 'executes commands via CommandRegistry' do
+      allow(client).to receive(:gets).and_return("foobar\n", nil)
       player.run
-      expect(client).to have_received(:puts).with("You say, 'hello'")
-      expect(client).to have_received(:puts).with("You say, 'world'")
+      expect(client).to have_received(:puts).with('Unknown command: foobar')
+    end
+
+    it 'skips empty input' do
+      allow(client).to receive(:gets).and_return("\n", "  \n", nil)
+      player.run
+      expect(client).not_to have_received(:puts)
     end
   end
 end
