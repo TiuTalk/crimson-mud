@@ -23,7 +23,7 @@ module Mud
       player.run
     ensure
       remove_player(player) if player
-      Mud.logger.info("#{player&.name || 'Visitor'} disconnected (#{client.ip_address})")
+      Mud.logger.info("#{player&.name || 'Visitor'} disconnected")
       client.close
     end
 
