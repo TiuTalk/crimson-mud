@@ -23,10 +23,7 @@ module Mud
       broadcast("#{player.name} arrived.", except: player)
       player.run
     ensure
-      remove_player(player) if player
-      broadcast("#{player.name} left.") if player
-      Mud.logger.info("#{player&.name || 'Visitor'} disconnected")
-      client.close
+      disconnect(player, client)
     end
 
     def add_player(player)
@@ -42,6 +39,13 @@ module Mud
     end
 
     private
+
+    def disconnect(player, client)
+      remove_player(player) if player
+      broadcast("#{player.name} left.") if player
+      Mud.logger.info("#{player&.name || 'Visitor'} disconnected")
+      client.close
+    end
 
     def welcome(client)
       client.puts('Welcome to Crimson MUD!')
