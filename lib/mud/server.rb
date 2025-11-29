@@ -20,9 +20,11 @@ module Mud
 
       add_player(player)
       Mud.logger.info("#{player.name} connected (#{player.ip_address})")
+      broadcast("#{player.name} arrived.", except: player)
       player.run
     ensure
       remove_player(player) if player
+      broadcast("#{player.name} left.") if player
       Mud.logger.info("#{player&.name || 'Visitor'} disconnected")
       client.close
     end

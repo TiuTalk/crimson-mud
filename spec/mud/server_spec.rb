@@ -57,5 +57,17 @@ RSpec.describe Mud::Server do
       server.handle_connection(socket)
       expect(client).to have_received(:close)
     end
+
+    it 'broadcasts arrived message excluding player' do
+      allow(server).to receive(:broadcast)
+      server.handle_connection(socket)
+      expect(server).to have_received(:broadcast).with('Alice arrived.', except: an_instance_of(Mud::Player))
+    end
+
+    it 'broadcasts left message on disconnect' do
+      allow(server).to receive(:broadcast)
+      server.handle_connection(socket)
+      expect(server).to have_received(:broadcast).with('Alice left.')
+    end
   end
 end
