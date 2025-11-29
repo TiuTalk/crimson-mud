@@ -5,6 +5,20 @@ require 'spec_helper'
 RSpec.describe Mud::CommandRegistry do
   let(:player) { instance_double(Mud::Player, puts: nil) }
 
+  describe '.register' do
+    let(:command_class) { Class.new }
+
+    it 'registers command by name' do
+      described_class.register(command_class, :look)
+      expect(described_class.find('look')).to eq(command_class)
+    end
+
+    it 'registers aliases' do
+      described_class.register(command_class, :test, aliases: %i[t])
+      expect(described_class.find('t')).to eq(command_class)
+    end
+  end
+
   describe '.parse' do
     it 'extracts command name and args' do
       expect(described_class.parse('say hello world')).to eq(['say', 'hello world'])
@@ -33,6 +47,11 @@ RSpec.describe Mud::CommandRegistry do
 
       it 'executes Say command' do
         described_class.execute('say hello', player:)
+        expect(player).to have_received(:puts).with("You say, 'hello'")
+      end
+
+      it 'executes via alias' do
+        described_class.execute("' hello", player:)
         expect(player).to have_received(:puts).with("You say, 'hello'")
       end
     end

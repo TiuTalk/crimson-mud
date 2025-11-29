@@ -2,14 +2,20 @@
 
 module Mud
   module CommandRegistry
-    COMMANDS = {
-      'say' => Commands::Say,
-      'quit' => Commands::Quit
-    }.freeze
+    @commands = {}
+
+    def self.register(klass, name, aliases: [])
+      @commands[name.to_s] = klass
+      aliases.each { |a| @commands[a.to_s] = klass }
+    end
+
+    def self.find(name)
+      @commands[name]
+    end
 
     def self.execute(input, player:)
       name, args = parse(input)
-      command_class = COMMANDS[name]
+      command_class = find(name)
 
       if command_class
         command_class.new(player:, args:).execute

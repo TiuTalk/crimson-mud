@@ -3,6 +3,8 @@
 module Mud
   module Commands
     class Quit < Base
+      command :quit
+
       def execute
         @player.quit
       end
