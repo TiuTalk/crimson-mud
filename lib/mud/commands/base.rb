@@ -3,6 +3,8 @@
 module Mud
   module Commands
     class Base
+      attr_reader :player, :args
+
       def self.command(name, aliases: [])
         CommandRegistry.register(self, name, aliases:)
       end
@@ -14,6 +16,12 @@ module Mud
 
       def execute
         raise NotImplementedError
+      end
+
+      private
+
+      def server
+        Server.instance
       end
     end
   end

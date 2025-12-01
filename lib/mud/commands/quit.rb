@@ -6,7 +6,7 @@ module Mud
       command :quit
 
       def execute
-        @player.quit
+        player.quit
       end
     end
   end

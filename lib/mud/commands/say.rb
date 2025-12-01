@@ -6,8 +6,8 @@ module Mud
       command :say, aliases: %i[']
 
       def execute
-        @player.puts("You say, '#{@args}'")
-        Server.instance.broadcast("#{@player.name} says, '#{@args}'", except: @player)
+        player.puts("You say, '#{args}'")
+        server.broadcast("#{player.name} says, '#{args}'", except: player)
       end
     end
   end
