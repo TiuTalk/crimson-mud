@@ -9,12 +9,20 @@ module Mud
         CommandRegistry.register(self, name, aliases:)
       end
 
+      def self.execute(...)
+        new(...).execute
+      end
+
       def initialize(player:, args:)
         @player = player
         @args = args
       end
 
       def execute
+        perform
+      end
+
+      def perform
         raise NotImplementedError
       end
 

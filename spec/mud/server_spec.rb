@@ -59,15 +59,15 @@ RSpec.describe Mud::Server do
     end
 
     it 'broadcasts arrived message excluding player' do
-      allow(server).to receive(:broadcast) # rubocop:disable RSpec/SubjectStub
+      allow(server).to receive(:broadcast)
       server.handle_connection(socket)
-      expect(server).to have_received(:broadcast).with('Alice arrived.', except: an_instance_of(Mud::Player)) # rubocop:disable RSpec/SubjectStub
+      expect(server).to have_received(:broadcast).with('Alice arrived.', except: an_instance_of(Mud::Player))
     end
 
     it 'broadcasts left message on disconnect' do
-      allow(server).to receive(:broadcast) # rubocop:disable RSpec/SubjectStub
+      allow(server).to receive(:broadcast)
       server.handle_connection(socket)
-      expect(server).to have_received(:broadcast).with('Alice left.') # rubocop:disable RSpec/SubjectStub
+      expect(server).to have_received(:broadcast).with('Alice left.')
     end
   end
 end

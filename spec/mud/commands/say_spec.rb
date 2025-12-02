@@ -15,14 +15,14 @@ RSpec.describe Mud::Commands::Say do
     expect(described_class).to be < Mud::Commands::Base
   end
 
-  describe '#execute' do
+  describe '#perform' do
     it 'sends formatted message to player' do
-      command.execute
+      command.perform
       expect(player).to have_received(:puts).with("You say, 'hello world'")
     end
 
     it 'broadcasts to other players' do
-      command.execute
+      command.perform
       expect(server).to have_received(:broadcast).with("Alice says, 'hello world'", except: player)
     end
   end

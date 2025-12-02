@@ -5,7 +5,7 @@ module Mud
     class Quit < Base
       command :quit
 
-      def execute
+      def perform
         player.quit
       end
     end
