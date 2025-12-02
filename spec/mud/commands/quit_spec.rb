@@ -14,8 +14,8 @@ RSpec.describe Mud::Commands::Quit do
 
   describe '#perform' do
     it 'quits player' do
+      expect(player).to receive(:quit)
       command.perform
-      expect(player).to have_received(:quit)
     end
   end
 end

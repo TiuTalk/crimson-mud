@@ -12,28 +12,28 @@ RSpec.describe Mud::Network::TelnetServer do
 
   describe '#start' do
     it 'creates TCP server' do
+      expect(TCPServer).to receive(:new)
       telnet_server.start
-      expect(TCPServer).to have_received(:new)
     end
   end
 
   describe '#stop' do
     it 'closes TCP server' do
       telnet_server.start
+      expect(tcp_server).to receive(:close)
       telnet_server.stop
-      expect(tcp_server).to have_received(:close)
     end
   end
 
   describe '#handle_client' do
     let(:socket) { instance_double(TCPSocket) }
-    let(:server) { instance_double(Mud::Server, handle_connection: nil) }
+    let(:server) { instance_double(Mud::Server) }
 
     before { allow(Mud::Server).to receive(:instance).and_return(server) }
 
     it 'delegates to Server' do
+      expect(server).to receive(:handle_connection).with(socket)
       telnet_server.handle_client(socket)
-      expect(server).to have_received(:handle_connection).with(socket)
     end
   end
 end

@@ -44,5 +44,8 @@ RSpec/MultipleMemoizedHelpers:
 RSpec/ExampleLength:
   Max: 10
 
+RSpec/MessageSpies:
+  EnforcedStyle: receive
+
 RSpec/SubjectStub:
   Enabled: false

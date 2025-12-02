@@ -15,9 +15,8 @@ RSpec.describe Mud::Player do
 
   describe '#puts' do
     it 'delegates to client' do
+      expect(client).to receive(:puts).with('hello')
       player.puts('hello')
-
-      expect(client).to have_received(:puts).with('hello')
     end
   end
 
@@ -31,13 +30,13 @@ RSpec.describe Mud::Player do
 
   describe '#quit' do
     it 'sends goodbye message' do
+      expect(client).to receive(:puts).with('Goodbye!')
       player.quit
-      expect(client).to have_received(:puts).with('Goodbye!')
     end
 
     it 'closes client' do
+      expect(client).to receive(:close)
       player.quit
-      expect(client).to have_received(:close)
     end
   end
 
@@ -50,14 +49,14 @@ RSpec.describe Mud::Player do
   describe '#run' do
     it 'executes commands via CommandRegistry' do
       allow(client).to receive(:gets).and_return("foobar\n", nil)
+      expect(client).to receive(:puts).with('Unknown command: foobar')
       player.run
-      expect(client).to have_received(:puts).with('Unknown command: foobar')
     end
 
     it 'skips empty input' do
       allow(client).to receive(:gets).and_return("\n", "  \n", nil)
+      expect(client).not_to receive(:puts)
       player.run
-      expect(client).not_to have_received(:puts)
     end
   end
 end

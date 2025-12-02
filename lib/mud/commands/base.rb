@@ -19,6 +19,7 @@ module Mud
       end
 
       def execute
+        Mud.logger.debug("#{player.name} executing #{self.class.name} with args: #{args.inspect}")
         perform
       end
 

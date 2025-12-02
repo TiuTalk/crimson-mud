@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mud::CommandRegistry do
-  let(:player) { instance_double(Mud::Player, puts: nil) }
+  let(:client) { instance_double(Mud::Network::Client, puts: nil, gets: nil, close: nil) }
+  let(:player) { Mud::Player.new(name: 'Test', client:) }
 
   describe '.register' do
     let(:command_class) { Class.new }
@@ -43,32 +44,30 @@ RSpec.describe Mud::CommandRegistry do
     before { allow(Mud::Server).to receive(:instance).and_return(server) }
 
     context 'with say command' do
-      let(:player) { instance_double(Mud::Player, puts: nil, name: 'Alice') }
+      let(:player) { Mud::Player.new(name: 'Alice', client:) }
 
       it 'executes Say command' do
+        expect(player).to receive(:puts).with("You say, 'hello'")
         described_class.execute('say hello', player:)
-        expect(player).to have_received(:puts).with("You say, 'hello'")
       end
 
       it 'executes via alias' do
+        expect(player).to receive(:puts).with("You say, 'hello'")
         described_class.execute("' hello", player:)
-        expect(player).to have_received(:puts).with("You say, 'hello'")
       end
     end
 
     context 'with quit command' do
-      let(:player) { instance_double(Mud::Player, quit: nil) }
-
       it 'executes Quit command' do
+        expect(player).to receive(:quit)
         described_class.execute('quit', player:)
-        expect(player).to have_received(:quit)
       end
     end
 
     context 'with unknown command' do
       it 'executes Unknown command' do
+        expect(player).to receive(:puts).with('Unknown command: foobar')
         described_class.execute('foobar', player:)
-        expect(player).to have_received(:puts).with('Unknown command: foobar')
       end
     end
   end

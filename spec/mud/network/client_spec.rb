@@ -10,9 +10,8 @@ RSpec.describe Mud::Network::Client do
 
   describe '#puts' do
     it 'delegates to socket' do
+      expect(socket).to receive(:puts).with('hello')
       client.puts('hello')
-
-      expect(socket).to have_received(:puts).with('hello')
     end
 
     it 'silently ignores IOError' do
@@ -50,9 +49,8 @@ RSpec.describe Mud::Network::Client do
 
   describe '#close' do
     it 'delegates to socket' do
+      expect(socket).to receive(:close)
       client.close
-
-      expect(socket).to have_received(:close)
     end
 
     it 'silently ignores IOError' do

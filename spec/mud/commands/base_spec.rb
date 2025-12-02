@@ -5,17 +5,16 @@ require 'spec_helper'
 RSpec.describe Mud::Commands::Base do
   subject(:command) { described_class.new(player:, args:) }
 
-  let(:player) { instance_double(Mud::Player) }
+  let(:client) { instance_double(Mud::Network::Client, puts: nil, gets: nil, close: nil) }
+  let(:player) { Mud::Player.new(name: 'Test', client:) }
   let(:args) { 'some arguments' }
 
   describe '.command' do
     let(:test_class) { Class.new(described_class) }
 
-    before { allow(Mud::CommandRegistry).to receive(:register) }
-
     it 'registers command with registry' do
+      expect(Mud::CommandRegistry).to receive(:register).with(test_class, :look, aliases: %i[l])
       test_class.command(:look, aliases: %i[l])
-      expect(Mud::CommandRegistry).to have_received(:register).with(test_class, :look, aliases: %i[l])
     end
   end
 
@@ -28,19 +27,16 @@ RSpec.describe Mud::Commands::Base do
       end
     end
 
-    before { allow(player).to receive(:puts) }
-
     it 'instantiates and executes' do
+      expect(player).to receive(:puts).with('performed')
       test_class.execute(player:, args:)
-      expect(player).to have_received(:puts).with('performed')
     end
   end
 
   describe '#execute' do
     it 'calls perform' do
-      allow(command).to receive(:perform)
+      expect(command).to receive(:perform)
       command.execute
-      expect(command).to have_received(:perform)
     end
   end
 

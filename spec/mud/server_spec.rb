@@ -38,9 +38,9 @@ RSpec.describe Mud::Server do
     end
 
     it 'sends to all players except excluded' do
+      expect(alice).not_to receive(:puts)
+      expect(bob).to receive(:puts).with('hello')
       server.broadcast('hello', except: alice)
-      expect(alice).not_to have_received(:puts)
-      expect(bob).to have_received(:puts).with('hello')
     end
   end
 
@@ -54,20 +54,20 @@ RSpec.describe Mud::Server do
     end
 
     it 'creates player and runs until disconnect' do
+      expect(client).to receive(:close)
       server.handle_connection(socket)
-      expect(client).to have_received(:close)
     end
 
     it 'broadcasts arrived message excluding player' do
-      allow(server).to receive(:broadcast)
+      expect(server).to receive(:broadcast).with('Alice arrived.', except: an_instance_of(Mud::Player))
+      allow(server).to receive(:broadcast).with('Alice left.')
       server.handle_connection(socket)
-      expect(server).to have_received(:broadcast).with('Alice arrived.', except: an_instance_of(Mud::Player))
     end
 
     it 'broadcasts left message on disconnect' do
-      allow(server).to receive(:broadcast)
+      allow(server).to receive(:broadcast).with('Alice arrived.', except: an_instance_of(Mud::Player))
+      expect(server).to receive(:broadcast).with('Alice left.')
       server.handle_connection(socket)
-      expect(server).to have_received(:broadcast).with('Alice left.')
     end
   end
 end
