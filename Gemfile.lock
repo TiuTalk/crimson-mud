@@ -6,7 +6,7 @@ PATH
       zeitwerk (~> 2.7)
 
 GEM
-  remote: https://rubygems.org/
+  remote: https://gem.coop/
   specs:
     ast (2.4.3)
     coderay (1.1.3)
