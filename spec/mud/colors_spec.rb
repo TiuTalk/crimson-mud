@@ -65,5 +65,45 @@ RSpec.describe Mud::Colors do
       it { expect(described_class.parse('&rhello')).to eq("\e[31mhello\e[0m") }
       it { expect(described_class.parse("&rhello\nworld")).to eq("\e[31mhello\nworld\e[0m") }
     end
+
+    context 'with &n reset code' do
+      it { expect(described_class.parse('&rhello &nworld')).to eq("\e[31mhello \e[0mworld\e[0m") }
+      it { expect(described_class.parse('&n')).to eq("\e[0m\e[0m") }
+    end
+  end
+
+  describe '.escape' do
+    subject { described_class.escape(text) }
+
+    context 'with nil' do
+      let(:text) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with empty string' do
+      let(:text) { '' }
+
+      it { is_expected.to eq('') }
+    end
+
+    context 'without ampersands' do
+      let(:text) { 'hello world' }
+
+      it { is_expected.to eq('hello world') }
+    end
+
+    context 'with color codes' do
+      it { expect(described_class.escape('&rhello')).to eq('&&rhello') }
+      it { expect(described_class.escape('&rhello &bworld')).to eq('&&rhello &&bworld') }
+    end
+
+    context 'with double ampersand' do
+      it { expect(described_class.escape('&&')).to eq('&&&&') }
+    end
+
+    context 'with single ampersand' do
+      it { expect(described_class.escape('&')).to eq('&&') }
+    end
   end
 end

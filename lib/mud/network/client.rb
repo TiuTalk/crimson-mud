@@ -22,7 +22,7 @@ module Mud
       end
 
       def gets
-        @socket.gets
+        Sanitizer.strip_ansi(@socket.gets)
       rescue IOError, Errno::EPIPE
         nil
       end

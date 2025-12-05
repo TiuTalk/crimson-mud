@@ -6,8 +6,9 @@ module Mud
       command :say, aliases: %i[']
 
       def perform
-        player.puts("&cYou say, '#{args}'")
-        server.broadcast("&c#{player.name} says, '#{args}'", except: player)
+        escaped = Colors.escape(args)
+        player.puts("&cYou say, '#{escaped}'")
+        server.broadcast("&c#{player.name} says, '#{escaped}'", except: player)
       end
     end
   end

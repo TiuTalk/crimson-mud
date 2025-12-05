@@ -63,6 +63,12 @@ RSpec.describe Mud::Network::Client do
       expect(client.gets).to eq("hello\n")
     end
 
+    it 'strips ANSI codes from input' do
+      allow(socket).to receive(:gets).and_return("\e[34mhacked\n")
+
+      expect(client.gets).to eq("hacked\n")
+    end
+
     it 'returns nil on IOError' do
       allow(socket).to receive(:gets).and_raise(IOError)
 

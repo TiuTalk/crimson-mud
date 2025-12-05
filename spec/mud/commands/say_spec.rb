@@ -25,5 +25,19 @@ RSpec.describe Mud::Commands::Say do
       expect(server).to receive(:broadcast).with("&cAlice says, 'hello world'", except: player)
       command.perform
     end
+
+    context 'with color code in input' do
+      let(:args) { '&rhello' }
+
+      it 'escapes color codes for player' do
+        expect(player).to receive(:puts).with("&cYou say, '&&rhello'")
+        command.perform
+      end
+
+      it 'escapes color codes for broadcast' do
+        expect(server).to receive(:broadcast).with("&cAlice says, '&&rhello'", except: player)
+        command.perform
+      end
+    end
   end
 end
