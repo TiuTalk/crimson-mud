@@ -15,9 +15,9 @@ module Mud
       @client = client
     end
 
-    def puts(message = '')
+    def puts(message, prompt: true)
       @client.puts(message)
-      @client.write(build_prompt)
+      @client.write(build_prompt) if prompt
     end
 
     def run
@@ -31,7 +31,7 @@ module Mud
     end
 
     def quit
-      puts('Goodbye!')
+      puts('Goodbye!', prompt: false)
       @client.close
     end
 

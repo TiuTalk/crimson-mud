@@ -39,7 +39,7 @@ RSpec.describe Mud::Server do
 
     it 'sends to all players except excluded' do
       expect(alice).not_to receive(:puts)
-      expect(bob).to receive(:puts).with('hello')
+      expect(bob).to receive(:puts).with('hello', prompt: false)
       server.broadcast('hello', except: alice)
     end
   end

@@ -36,7 +36,7 @@ module Mud
     end
 
     def broadcast(message, except: nil)
-      @mutex.synchronize { @players.dup }.each { _1.puts(message) unless _1 == except }
+      @mutex.synchronize { @players.dup }.each { _1.puts(message, prompt: false) unless _1 == except }
     end
 
     private

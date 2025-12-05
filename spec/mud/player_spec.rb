@@ -24,6 +24,12 @@ RSpec.describe Mud::Player do
       expect(client).to receive(:write).with("\n100hp 50mn 25mv > ").ordered
       player.puts('hello')
     end
+
+    it 'skips prompt when prompt: false' do
+      expect(client).to receive(:puts).with('hello')
+      expect(client).not_to receive(:write)
+      player.puts('hello', prompt: false)
+    end
   end
 
   describe '#gets' do
