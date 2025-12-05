@@ -49,7 +49,7 @@ module Mud
     end
 
     def welcome(client)
-      client.puts("Welcome to Crimson MUD!\n")
+      client.puts("&RWelcome to Crimson MUD!\n")
 
       loop do
         client.puts('What is your name?')

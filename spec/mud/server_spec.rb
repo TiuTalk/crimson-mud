@@ -50,7 +50,7 @@ RSpec.describe Mud::Server do
     before { allow(client).to receive(:gets).and_return("Alice\n") }
 
     it 'sends blank line after MOTD' do
-      expect(client).to receive(:puts).with("Welcome to Crimson MUD!\n").ordered
+      expect(client).to receive(:puts).with("&RWelcome to Crimson MUD!\n").ordered
       expect(client).to receive(:puts).with('What is your name?').ordered
       server.send(:welcome, client)
     end

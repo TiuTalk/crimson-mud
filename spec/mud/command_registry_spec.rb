@@ -47,12 +47,12 @@ RSpec.describe Mud::CommandRegistry do
       let(:player) { Mud::Player.new(name: 'Alice', client:) }
 
       it 'executes Say command' do
-        expect(player).to receive(:puts).with("You say, 'hello'")
+        expect(player).to receive(:puts).with("&cYou say, 'hello'")
         described_class.execute('say hello', player:)
       end
 
       it 'executes via alias' do
-        expect(player).to receive(:puts).with("You say, 'hello'")
+        expect(player).to receive(:puts).with("&cYou say, 'hello'")
         described_class.execute("' hello", player:)
       end
     end

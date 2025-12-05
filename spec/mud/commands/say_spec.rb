@@ -17,12 +17,12 @@ RSpec.describe Mud::Commands::Say do
 
   describe '#perform' do
     it 'sends formatted message to player' do
-      expect(player).to receive(:puts).with("You say, 'hello world'")
+      expect(player).to receive(:puts).with("&cYou say, 'hello world'")
       command.perform
     end
 
     it 'broadcasts to other players' do
-      expect(server).to receive(:broadcast).with("Alice says, 'hello world'", except: player)
+      expect(server).to receive(:broadcast).with("&cAlice says, 'hello world'", except: player)
       command.perform
     end
   end
