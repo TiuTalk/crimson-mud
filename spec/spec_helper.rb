@@ -21,6 +21,9 @@ if ENV['CI'] || ENV['COVERAGE']
 
   SimpleCov.start do
     minimum_coverage 100
+
+    add_group 'Commands', %w[lib/mud/commands lib/mud/command_registry.rb]
+    add_filter 'spec/'
   end
 end
 
