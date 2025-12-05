@@ -21,6 +21,7 @@ module Mud
       add_player(player)
       Mud.logger.info("#{player.name} connected (#{player.ip_address})")
       broadcast("#{player.name} arrived.", except: player)
+      player.puts("Welcome, #{player.name}!")
       player.run
     ensure
       disconnect(player, client)
@@ -48,7 +49,7 @@ module Mud
     end
 
     def welcome(client)
-      client.puts('Welcome to Crimson MUD!')
+      client.puts("Welcome to Crimson MUD!\n")
 
       loop do
         client.puts('What is your name?')

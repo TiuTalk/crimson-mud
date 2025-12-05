@@ -20,6 +20,7 @@ module Mud
         input = line.chomp.strip
         next if input.empty?
 
+        Mud.logger.debug("#{name} input #{input.inspect}")
         CommandRegistry.execute(input, player: self)
       end
     end

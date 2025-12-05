@@ -58,5 +58,12 @@ RSpec.describe Mud::Player do
       expect(client).not_to receive(:puts)
       player.run
     end
+
+    it 'logs input before command execution' do
+      allow(client).to receive(:gets).and_return("say hello\n", nil)
+      allow(Mud.logger).to receive(:debug)
+      expect(Mud.logger).to receive(:debug).with('Alice input "say hello"').ordered
+      player.run
+    end
   end
 end

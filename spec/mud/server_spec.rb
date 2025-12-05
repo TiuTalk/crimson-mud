@@ -44,6 +44,18 @@ RSpec.describe Mud::Server do
     end
   end
 
+  describe '#welcome' do
+    let(:client) { instance_double(Mud::Network::Client, puts: nil) }
+
+    before { allow(client).to receive(:gets).and_return("Alice\n") }
+
+    it 'sends blank line after MOTD' do
+      expect(client).to receive(:puts).with("Welcome to Crimson MUD!\n").ordered
+      expect(client).to receive(:puts).with('What is your name?').ordered
+      server.send(:welcome, client)
+    end
+  end
+
   describe '#handle_connection' do
     let(:socket) { instance_double(TCPSocket) }
     let(:client) { instance_double(Mud::Network::Client, puts: nil, close: nil, ip_address: '127.0.0.1') }
@@ -67,6 +79,12 @@ RSpec.describe Mud::Server do
     it 'broadcasts left message on disconnect' do
       allow(server).to receive(:broadcast).with('Alice arrived.', except: an_instance_of(Mud::Player))
       expect(server).to receive(:broadcast).with('Alice left.')
+      server.handle_connection(socket)
+    end
+
+    it 'sends personalized welcome to player' do
+      allow(server).to receive(:broadcast)
+      expect(client).to receive(:puts).with('Welcome, Alice!')
       server.handle_connection(socket)
     end
   end
