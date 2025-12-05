@@ -9,9 +9,14 @@ RSpec.describe Mud::Network::Client do
   let(:remote_address) { instance_double(Addrinfo, ip_address: '192.168.1.100') }
 
   describe '#puts' do
-    it 'delegates to socket' do
+    it 'writes to socket' do
       expect(socket).to receive(:puts).with('hello')
       client.puts('hello')
+    end
+
+    it 'parses colors before writing to socket' do
+      expect(socket).to receive(:puts).with("\e[31mhello\e[0m")
+      client.puts('&rhello')
     end
 
     it 'silently ignores IOError' do
@@ -28,9 +33,14 @@ RSpec.describe Mud::Network::Client do
   end
 
   describe '#write' do
-    it 'delegates to socket' do
+    it 'writes to socket' do
       expect(socket).to receive(:write).with('hello')
       client.write('hello')
+    end
+
+    it 'parses colors before writing to socket' do
+      expect(socket).to receive(:write).with("\e[31mhello\e[0m")
+      client.write('&rhello')
     end
 
     it 'silently ignores IOError' do

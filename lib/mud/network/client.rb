@@ -10,13 +10,13 @@ module Mud
       end
 
       def puts(message)
-        @socket.puts(message)
+        @socket.puts(Colors.parse(message))
       rescue IOError, Errno::EPIPE
         # Client disconnected, ignore
       end
 
       def write(message)
-        @socket.write(message)
+        @socket.write(Colors.parse(message))
       rescue IOError, Errno::EPIPE
         # Client disconnected, ignore
       end
