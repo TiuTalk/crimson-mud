@@ -34,7 +34,7 @@ bundle exec rubocop --autocorrect-all
 - `lib/mud/server.rb` - Application server (singleton), orchestrates connections
 - `lib/mud/player.rb` - Player entity, wraps client with name/identity
 - `lib/mud/command_registry.rb` - Parses input and dispatches to command classes
-- `lib/mud/commands/` - Command classes (Base, Say, Quit)
+- `lib/mud/commands/` - Command classes using Template Method pattern (Base, Say, Quit)
 - `spec/` - RSpec tests mirroring lib structure
 
 ### Message Flow
@@ -43,6 +43,24 @@ bundle exec rubocop --autocorrect-all
 TelnetServer (TCP) → Server#handle_connection → Player#run
   → CommandRegistry.execute → Commands::* → Player/Server
 ```
+
+### Adding Commands
+
+Commands use Template Method pattern. Create in `lib/mud/commands/`:
+
+```ruby
+class MyCommand < Base
+  command :mycommand, aliases: %i[mc]  # Registers with CommandRegistry
+
+  def perform  # Override this, not execute
+    player.puts("output")
+    server.broadcast("message", except: player)
+  end
+end
+```
+
+- `execute` handles logging, calls `perform`
+- Access `player`, `args`, `server` from base class
 
 ## Design Principles
 
