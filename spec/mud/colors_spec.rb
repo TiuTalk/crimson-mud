@@ -57,5 +57,13 @@ RSpec.describe Mud::Colors do
     context 'with only escapes or invalid codes' do
       it { expect(described_class.parse('hello && &x')).to eq('hello & &x') }
     end
+
+    context 'with trailing newlines' do
+      it { expect(described_class.parse("&rhello\n")).to eq("\e[31mhello\e[0m\n") }
+      it { expect(described_class.parse("&rhello\r\n")).to eq("\e[31mhello\e[0m\r\n") }
+      it { expect(described_class.parse("&rhello\n\n")).to eq("\e[31mhello\e[0m\n\n") }
+      it { expect(described_class.parse('&rhello')).to eq("\e[31mhello\e[0m") }
+      it { expect(described_class.parse("&rhello\nworld")).to eq("\e[31mhello\nworld\e[0m") }
+    end
   end
 end

@@ -21,8 +21,14 @@ module Mud
       # Skip if no color codes found
       return text unless text.match?(PATTERN)
 
-      # Replace color codes and append reset
-      text.gsub(PATTERN) { "\e[#{CODES[Regexp.last_match(1)]}m" } + RESET
+      result = text.gsub(PATTERN) { "\e[#{CODES[Regexp.last_match(1)]}m" }
+
+      # Insert RESET before trailing newlines, or append if none
+      if /(\r?\n)+\z/.match?(result)
+        result.sub(/(\r?\n)+\z/, "#{RESET}\\0")
+      else
+        result + RESET
+      end
     end
   end
 end
