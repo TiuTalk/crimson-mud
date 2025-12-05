@@ -16,6 +16,9 @@ module Mud
       end
 
       def write(message)
+        # NOTE: Force binary encoding for messages with telnet codes (invalid UTF-8)
+        message = message.b unless message.valid_encoding?
+
         @socket.write(Colors.parse(message))
       rescue IOError, Errno::EPIPE
         # Client disconnected, ignore

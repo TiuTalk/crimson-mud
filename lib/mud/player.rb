@@ -17,7 +17,7 @@ module Mud
 
     def puts(message, prompt: true)
       @client.puts(message)
-      @client.write(build_prompt) if prompt
+      @client.write(self.prompt) if prompt
     end
 
     def run
@@ -37,8 +37,8 @@ module Mud
 
     private
 
-    def build_prompt
-      "\n100hp 50mn 25mv > "
+    def prompt
+      "\n&R100&rhp &B50&bmn &Y25&ymv&n > #{Network::Telnet::PROMPT_MARKER}"
     end
   end
 end

@@ -43,6 +43,11 @@ RSpec.describe Mud::Network::Client do
       client.write('&rhello')
     end
 
+    it 'handles binary data with colors' do
+      expect(socket).to receive(:write).with("\e[31mhello\xFF\xF9\e[0m".b)
+      client.write("&rhello\xFF\xF9")
+    end
+
     it 'silently ignores IOError' do
       allow(socket).to receive(:write).and_raise(IOError)
 

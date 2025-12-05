@@ -21,7 +21,7 @@ RSpec.describe Mud::Player do
 
     it 'shows prompt after message' do
       expect(client).to receive(:puts).with('hello').ordered
-      expect(client).to receive(:write).with("\n100hp 50mn 25mv > ").ordered
+      expect(client).to receive(:write).with("\n&R100&rhp &B50&bmn &Y25&ymv&n > \xFF\xF9\xFF\xEF").ordered
       player.puts('hello')
     end
 
