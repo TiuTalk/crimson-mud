@@ -15,6 +15,12 @@ module Mud
         # Client disconnected, ignore
       end
 
+      def write(message)
+        @socket.write(message)
+      rescue IOError, Errno::EPIPE
+        # Client disconnected, ignore
+      end
+
       def gets
         @socket.gets
       rescue IOError, Errno::EPIPE

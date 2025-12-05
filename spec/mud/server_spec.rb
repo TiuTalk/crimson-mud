@@ -58,7 +58,7 @@ RSpec.describe Mud::Server do
 
   describe '#handle_connection' do
     let(:socket) { instance_double(TCPSocket) }
-    let(:client) { instance_double(Mud::Network::Client, puts: nil, close: nil, ip_address: '127.0.0.1') }
+    let(:client) { instance_double(Mud::Network::Client, puts: nil, write: nil, close: nil, ip_address: '127.0.0.1') }
 
     before do
       allow(Mud::Network::Client).to receive(:new).and_return(client)

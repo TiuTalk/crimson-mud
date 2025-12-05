@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Mud::Player do
   subject(:player) { described_class.new(name: 'Alice', client:) }
 
-  let(:client) { instance_double(Mud::Network::Client, puts: nil, gets: nil, close: nil, ip_address: '192.168.1.100') }
+  let(:client) { instance_double(Mud::Network::Client, puts: nil, write: nil, gets: nil, close: nil, ip_address: '192.168.1.100') }
 
   describe '#name' do
     it 'returns name' do
@@ -14,8 +14,14 @@ RSpec.describe Mud::Player do
   end
 
   describe '#puts' do
-    it 'delegates to client' do
+    it 'sends message to client' do
       expect(client).to receive(:puts).with('hello')
+      player.puts('hello')
+    end
+
+    it 'shows prompt after message' do
+      expect(client).to receive(:puts).with('hello').ordered
+      expect(client).to receive(:write).with("\n100hp 50mn 25mv > ").ordered
       player.puts('hello')
     end
   end

@@ -8,11 +8,16 @@ module Mud
 
     attr_reader :name
 
-    def_delegators :@client, :puts, :gets, :ip_address
+    def_delegators :@client, :gets, :ip_address
 
     def initialize(name:, client:)
       @name = name
       @client = client
+    end
+
+    def puts(message = '')
+      @client.puts(message)
+      @client.write(build_prompt)
     end
 
     def run
@@ -28,6 +33,12 @@ module Mud
     def quit
       puts('Goodbye!')
       @client.close
+    end
+
+    private
+
+    def build_prompt
+      "\n100hp 50mn 25mv > "
     end
   end
 end

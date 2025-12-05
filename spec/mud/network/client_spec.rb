@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Mud::Network::Client do
   subject(:client) { described_class.new(socket:) }
 
-  let(:socket) { instance_double(TCPSocket, puts: nil, gets: nil, close: nil, remote_address:) }
+  let(:socket) { instance_double(TCPSocket, puts: nil, write: nil, gets: nil, close: nil, remote_address:) }
   let(:remote_address) { instance_double(Addrinfo, ip_address: '192.168.1.100') }
 
   describe '#puts' do
@@ -24,6 +24,25 @@ RSpec.describe Mud::Network::Client do
       allow(socket).to receive(:puts).and_raise(Errno::EPIPE)
 
       expect { client.puts('hello') }.not_to raise_error
+    end
+  end
+
+  describe '#write' do
+    it 'delegates to socket' do
+      expect(socket).to receive(:write).with('hello')
+      client.write('hello')
+    end
+
+    it 'silently ignores IOError' do
+      allow(socket).to receive(:write).and_raise(IOError)
+
+      expect { client.write('hello') }.not_to raise_error
+    end
+
+    it 'silently ignores Errno::EPIPE' do
+      allow(socket).to receive(:write).and_raise(Errno::EPIPE)
+
+      expect { client.write('hello') }.not_to raise_error
     end
   end
 
