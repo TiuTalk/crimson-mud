@@ -6,4 +6,14 @@ loader.setup
 
 module Mud
   class Error < StandardError; end
+
+  def self.configuration
+    @configuration ||= Configuration.new
+  end
+
+  def self.configure
+    yield(configuration)
+  end
+
+  def self.logger = configuration.logger
 end

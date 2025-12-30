@@ -1,23 +1,21 @@
 # frozen_string_literal: true
 
 require 'socket'
-require 'logger'
 
 module Mud
   module Telnet
     class Server
-      attr_reader :host, :port, :logger
+      attr_reader :host, :port
 
-      def initialize(host: '0.0.0.0', port: 4000, logger: nil)
+      def initialize(host: '0.0.0.0', port: 4000)
         @host = host
         @port = port
-        @logger = logger || Logger.new($stdout)
         @server = nil
       end
 
       def start
         @server = TCPServer.new(@host, @port)
-        logger.info("Server listening on #{@host}:#{@port}")
+        Mud.logger.info("Server listening on #{@host}:#{@port}")
 
         loop do
           Thread.start(@server.accept) do |client|
@@ -33,21 +31,21 @@ module Mud
       def stop
         return unless @server && !@server.closed?
 
-        logger.info('Server stopped')
+        Mud.logger.info('Server stopped')
         @server.close
       end
 
       private
 
       def handle_client(client)
-        logger.info("Client connected: #{client.inspect}")
+        Mud.logger.info("Client connected: #{client.inspect}")
 
         client.puts 'Hello !'
         client.puts "Time is #{Time.now}"
       rescue StandardError => e
-        logger.error(e.inspect)
+        Mud.logger.error(e.inspect)
       ensure
-        logger.info("Client disconnected: #{client.inspect}")
+        Mud.logger.info("Client disconnected: #{client.inspect}")
         client.close
       end
     end
