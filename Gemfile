@@ -12,4 +12,6 @@ gem 'rake', '~> 13.0'
 gem 'rspec'
 
 # Linters
-gem 'rubocop', '~> 1.21'
+gem 'rubocop'
+gem 'rubocop-performance'
+gem 'rubocop-rspec'
