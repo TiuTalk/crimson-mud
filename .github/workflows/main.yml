@@ -13,11 +13,9 @@ jobs:
     name: Ruby ${{ matrix.ruby }}
     strategy:
       matrix:
-        ruby:
-          - '3.4.7'
-
+        ruby: ['3.2', '3.3', '3.4', '4.0', head]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Set up Ruby
@@ -25,5 +23,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-      - name: Run the default task
-        run: bundle exec rake
+      - name: Run RuboCop
+        run: bundle exec rubocop
+      - name: Run RSpec
+        run: bundle exec rspec
