@@ -1,0 +1,45 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+Multi-User Dungeon (MUD) server written in Ruby. Uses Zeitwerk for autoloading.
+
+## Commands
+
+```bash
+# Tests
+bundle exec rspec
+bundle exec rspec spec/file_spec.rb
+bundle exec rspec spec/file_spec.rb:42
+
+# Linters
+bundle exec rubocop --format=simple --autocorrect-all
+```
+
+## Architecture
+
+- `lib/mud.rb` - Entry point, sets up Zeitwerk autoloader
+- `lib/mud/` - All module code, autoloaded
+- `spec/` - RSpec tests mirror `lib/` structure
+
+## Code Standards
+
+- **YAGNI** - Don't build it until you need it
+- **DRY** - Extract duplication only after it appears 3+ times
+- **Composition over inheritance** - Prefer delegation and modules over class hierarchies
+- **Single Responsibility** - Classes/methods do one thing well
+- **Explicit over implicit** - Favor clarity over cleverness
+
+## TDD - Test Driven Development
+
+1. **Red** - Write failing spec first
+2. **Green** - Minimal code to pass
+3. **Refactor** - Clean up, keep tests green
+
+## Dependencies
+
+- Ruby >= 3.2
+- zeitwerk - Autoloading
+- logger - Logging
