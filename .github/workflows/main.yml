@@ -26,4 +26,4 @@ jobs:
       - name: Run RuboCop
         run: bundle exec rubocop
       - name: Run RSpec
-        run: bundle exec rspec
+        run: bundle exec rspec --format progress
