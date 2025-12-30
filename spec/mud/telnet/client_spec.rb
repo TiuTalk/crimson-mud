@@ -3,8 +3,8 @@
 require 'logger'
 require 'socket'
 
-RSpec.describe Mud::Telnet::Connection do
-  subject(:connection) { described_class.new(socket) }
+RSpec.describe Mud::Telnet::Client do
+  subject(:client) { described_class.new(socket) }
 
   let(:logger) { instance_double(Logger, info: nil, error: nil) }
   let(:socket) do
@@ -17,38 +17,38 @@ RSpec.describe Mud::Telnet::Connection do
   describe '#handle' do
     it 'echoes input back to socket' do
       allow(socket).to receive(:gets).and_return("hello\n", nil)
-      connection.handle
+      client.handle
       expect(socket).to have_received(:puts).with('hello')
     end
 
     it 'closes on quit command' do
       allow(socket).to receive(:gets).and_return("quit\n")
-      connection.handle
+      client.handle
       expect(socket).to have_received(:close)
       expect(socket).not_to have_received(:puts)
     end
 
     it 'closes socket on disconnect' do
-      connection.handle
+      client.handle
       expect(socket).to have_received(:close)
     end
 
     it 'logs connection and disconnection' do
-      connection.handle
+      client.handle
       expect(logger).to have_received(:info).with(/Client connected/)
       expect(logger).to have_received(:info).with(/Client disconnected/)
     end
 
     it 'handles errors and closes socket' do
       allow(socket).to receive(:gets).and_raise(StandardError, 'test error')
-      connection.handle
+      client.handle
       expect(logger).to have_received(:error)
       expect(socket).to have_received(:close)
     end
 
     it 'handles already closed socket' do
       allow(socket).to receive_messages(gets: nil, closed?: true)
-      connection.handle
+      client.handle
       expect(socket).not_to have_received(:close)
     end
   end

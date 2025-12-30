@@ -2,7 +2,7 @@
 
 module Mud
   module Telnet
-    class Connection
+    class Client
       def initialize(socket)
         @socket = socket
         @remote_address = socket.remote_address

@@ -18,8 +18,8 @@ module Mud
         Mud.logger.info("Server listening on #{@host}:#{@port}")
 
         loop do
-          Thread.start(@server.accept) do |client|
-            handle_client(client)
+          Thread.start(@server.accept) do |socket|
+            handle_client(socket)
           end
         end
       rescue Interrupt, IOError
@@ -35,8 +35,8 @@ module Mud
         @server.close
       end
 
-      def handle_client(client)
-        Connection.new(client).handle
+      def handle_client(socket)
+        Client.new(socket).handle
       end
     end
   end
