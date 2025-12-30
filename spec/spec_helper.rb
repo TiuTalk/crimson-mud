@@ -14,6 +14,14 @@
 # the additional setup, and require it from the spec files that actually need
 # it.
 
+if ENV['COVERAGE']
+  require 'simplecov'
+
+  SimpleCov.start do
+    add_filter 'spec'
+  end
+end
+
 require 'mud'
 
 Mud.configure do |config|

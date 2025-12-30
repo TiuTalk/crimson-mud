@@ -9,9 +9,10 @@ gem 'irb'
 gem 'rake', '~> 13.0'
 
 # Test
-gem 'rspec'
+gem 'rspec', require: false
+gem 'simplecov', require: false
 
 # Linters
-gem 'rubocop'
-gem 'rubocop-performance'
-gem 'rubocop-rspec'
+gem 'rubocop', require: false
+gem 'rubocop-performance', require: false
+gem 'rubocop-rspec', require: false
