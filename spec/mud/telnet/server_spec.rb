@@ -34,11 +34,23 @@ RSpec.describe Mud::Telnet::Server do
   end
 
   describe '#handle_client' do
-    let(:client) { instance_double(TCPSocket, puts: nil, close: nil) }
+    let(:client) { instance_double(TCPSocket, puts: nil, close: nil, gets: nil) }
 
-    it 'greets and closes client' do
-      server.send(:handle_client, client)
-      expect(client).to have_received(:puts).with('Hello !')
+    it 'echoes input back to client' do
+      allow(client).to receive(:gets).and_return("hello\n", nil)
+      server.handle_client(client)
+      expect(client).to have_received(:puts).with('hello')
+    end
+
+    it 'closes on quit command' do
+      allow(client).to receive(:gets).and_return("quit\n")
+      server.handle_client(client)
+      expect(client).to have_received(:close)
+      expect(client).not_to have_received(:puts)
+    end
+
+    it 'closes client on disconnect' do
+      server.handle_client(client)
       expect(client).to have_received(:close)
     end
   end

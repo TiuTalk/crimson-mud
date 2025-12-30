@@ -35,13 +35,14 @@ module Mud
         @server.close
       end
 
-      private
-
       def handle_client(client)
         Mud.logger.info("Client connected: #{client.inspect}")
 
-        client.puts 'Hello !'
-        client.puts "Time is #{Time.now}"
+        while (input = client.gets&.chomp)
+          break if input == 'quit'
+
+          client.puts(input)
+        end
       rescue StandardError => e
         Mud.logger.error(e.inspect)
       ensure
