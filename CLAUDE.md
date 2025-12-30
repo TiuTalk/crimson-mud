@@ -24,6 +24,14 @@ bundle exec rubocop --format=simple --autocorrect-all
 - `lib/mud/` - All module code, autoloaded
 - `spec/` - RSpec tests mirror `lib/` structure
 
+### Telnet Module
+- `Mud::Telnet::Server` - TCP server, spawns thread per client connection
+- `Mud::Telnet::Client` - Handles individual client socket I/O
+
+### Configuration
+- `Mud.configure { |c| ... }` - Block-style configuration
+- `Mud.logger` - Centralized logger access
+
 ## Code Standards
 
 - **YAGNI** - Don't build it until you need it
