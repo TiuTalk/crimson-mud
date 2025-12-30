@@ -36,18 +36,7 @@ module Mud
       end
 
       def handle_client(client)
-        Mud.logger.info("Client connected: #{client.inspect}")
-
-        while (input = client.gets&.chomp)
-          break if input == 'quit'
-
-          client.puts(input)
-        end
-      rescue StandardError => e
-        Mud.logger.error(e.inspect)
-      ensure
-        Mud.logger.info("Client disconnected: #{client.inspect}")
-        client.close
+        Connection.new(client).handle
       end
     end
   end
