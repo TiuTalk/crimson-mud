@@ -9,7 +9,7 @@ gem 'irb'
 gem 'rake', '~> 13.0'
 
 # Test
-gem 'rspec', '~> 3.0'
+gem 'rspec'
 
 # Linters
 gem 'rubocop', '~> 1.21'
