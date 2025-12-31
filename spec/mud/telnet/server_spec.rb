@@ -32,4 +32,27 @@ RSpec.describe Mud::Telnet::Server do
       expect { server.stop }.not_to raise_error
     end
   end
+
+  describe '#handle_client' do
+    let(:socket) do
+      instance_double(TCPSocket, puts: nil, gets: nil, close: nil, closed?: false,
+        read: nil, write: nil, remote_address: addrinfo)
+    end
+    let(:addrinfo) { instance_double(Addrinfo, ip_address: '127.0.0.1', ip_port: 12_345) }
+
+    it 'sends welcome message' do
+      server.handle_client(socket)
+      expect(socket).to have_received(:puts).with('Welcome to Crimson MUD!')
+    end
+
+    it 'logs connection' do
+      server.handle_client(socket)
+      expect(logger).to have_received(:info).with(/Connected.*127.0.0.1:12345/)
+    end
+
+    it 'logs disconnection' do
+      server.handle_client(socket)
+      expect(logger).to have_received(:info).with(/Disconnected.*127.0.0.1:12345/)
+    end
+  end
 end

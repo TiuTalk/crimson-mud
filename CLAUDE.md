@@ -9,6 +9,9 @@ Multi-User Dungeon (MUD) server written in Ruby. Uses Zeitwerk for autoloading.
 ## Commands
 
 ```bash
+# Run server (telnet 0.0.0.0:4000)
+bundle exec bin/server
+
 # Tests
 bundle exec rspec
 bundle exec rspec spec/file_spec.rb
@@ -26,7 +29,10 @@ bundle exec rubocop --format=simple --autocorrect-all
 
 ### Telnet Module
 - `Mud::Telnet::Server` - TCP server, spawns thread per client connection
-- `Mud::Telnet::Client` - Handles individual client socket I/O
+- `Mud::Telnet::Client` - Wraps socket I/O with Forwardable delegation
+
+### Player
+- `Mud::Player` - Game loop per connection, delegates I/O to Client
 
 ### Configuration
 - `Mud.configure { |c| ... }` - Block-style configuration

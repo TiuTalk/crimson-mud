@@ -1,55 +1,69 @@
 # frozen_string_literal: true
 
-require 'logger'
 require 'socket'
 
 RSpec.describe Mud::Telnet::Client do
   subject(:client) { described_class.new(socket) }
 
-  let(:logger) { instance_double(Logger, info: nil, error: nil) }
   let(:socket) do
-    instance_double(TCPSocket, puts: nil, close: nil, gets: nil, remote_address: addrinfo, closed?: false)
+    instance_double(TCPSocket, puts: nil, close: nil, gets: nil, read: nil, write: nil,
+      remote_address: addrinfo, closed?: false)
   end
   let(:addrinfo) { instance_double(Addrinfo, ip_address: '127.0.0.1', ip_port: 12_345) }
 
-  before { allow(Mud).to receive(:logger).and_return(logger) }
+  describe '#gets' do
+    it 'delegates to socket' do
+      allow(socket).to receive(:gets).and_return("hello\n")
+      expect(client.gets).to eq("hello\n")
+    end
+  end
 
-  describe '#handle' do
-    it 'echoes input back to socket' do
-      allow(socket).to receive(:gets).and_return("hello\n", nil)
-      client.handle
+  describe '#puts' do
+    it 'delegates to socket' do
+      client.puts('hello')
       expect(socket).to have_received(:puts).with('hello')
     end
+  end
 
-    it 'closes on quit command' do
-      allow(socket).to receive(:gets).and_return("quit\n")
-      client.handle
-      expect(socket).to have_received(:close)
-      expect(socket).not_to have_received(:puts)
+  describe '#read' do
+    it 'delegates to socket' do
+      allow(socket).to receive(:read).and_return('data')
+      expect(client.read).to eq('data')
     end
+  end
 
-    it 'closes socket on disconnect' do
-      client.handle
-      expect(socket).to have_received(:close)
+  describe '#write' do
+    it 'delegates to socket' do
+      client.write('data')
+      expect(socket).to have_received(:write).with('data')
     end
+  end
 
-    it 'logs connection and disconnection' do
-      client.handle
-      expect(logger).to have_received(:info).with(/Client connected/)
-      expect(logger).to have_received(:info).with(/Client disconnected/)
-    end
-
-    it 'handles errors and closes socket' do
-      allow(socket).to receive(:gets).and_raise(StandardError, 'test error')
-      client.handle
-      expect(logger).to have_received(:error)
+  describe '#close' do
+    it 'closes socket' do
+      client.close
       expect(socket).to have_received(:close)
     end
 
-    it 'handles already closed socket' do
-      allow(socket).to receive_messages(gets: nil, closed?: true)
-      client.handle
+    it 'does not close already closed socket' do
+      allow(socket).to receive(:closed?).and_return(true)
+      client.close
       expect(socket).not_to have_received(:close)
+    end
+  end
+
+  describe '#closed?' do
+    it { is_expected.not_to be_closed }
+
+    it 'delegates to socket' do
+      allow(socket).to receive(:closed?).and_return(true)
+      expect(client).to be_closed
+    end
+  end
+
+  describe '#remote_address' do
+    it 'returns ip:port string' do
+      expect(client.remote_address).to eq('127.0.0.1:12345')
     end
   end
 end

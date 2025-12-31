@@ -36,7 +36,22 @@ module Mud
       end
 
       def handle_client(socket)
-        Client.new(socket).handle
+        client = Client.new(socket)
+        log_connect(client)
+        client.puts('Welcome to Crimson MUD!')
+        Player.new(client).run
+      ensure
+        log_disconnect(client)
+      end
+
+      private
+
+      def log_connect(client)
+        Mud.logger.info("Connected: #{client.remote_address}")
+      end
+
+      def log_disconnect(client)
+        Mud.logger.info("Disconnected: #{client.remote_address}")
       end
     end
   end
