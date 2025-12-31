@@ -9,7 +9,7 @@ module Mud
 
       def_delegators :@socket, :gets, :puts, :read, :write, :closed?
 
-      def initialize(socket)
+      def initialize(socket:)
         @socket = socket
         @remote_address = socket.remote_address
       end

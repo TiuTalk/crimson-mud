@@ -19,7 +19,7 @@ module Mud
 
         loop do
           Thread.start(@server.accept) do |socket|
-            handle_client(socket)
+            handle_client(socket:)
           end
         end
       rescue Interrupt, IOError
@@ -35,11 +35,11 @@ module Mud
         @server.close
       end
 
-      def handle_client(socket)
-        client = Client.new(socket)
+      def handle_client(socket:)
+        client = Client.new(socket:)
         log_connect(client)
         client.puts('Welcome to Crimson MUD!')
-        Player.new(client).run
+        Player.new(client:).run
       ensure
         log_disconnect(client)
       end

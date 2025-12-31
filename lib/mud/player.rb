@@ -10,7 +10,7 @@ module Mud
 
     def_delegators :client, :gets, :puts, :read, :write, :close
 
-    def initialize(client)
+    def initialize(client:)
       @client = client
     end
 

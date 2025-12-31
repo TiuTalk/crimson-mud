@@ -3,7 +3,7 @@
 require 'socket'
 
 RSpec.describe Mud::Telnet::Client do
-  subject(:client) { described_class.new(socket) }
+  subject(:client) { described_class.new(socket:) }
 
   let(:socket) do
     instance_double(TCPSocket, puts: nil, close: nil, gets: nil, read: nil, write: nil,

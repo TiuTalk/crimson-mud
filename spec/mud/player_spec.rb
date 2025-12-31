@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Mud::Player do
-  subject(:player) { described_class.new(client) }
+  subject(:player) { described_class.new(client:) }
 
   let(:client) do
     instance_double(Mud::Telnet::Client, gets: nil, puts: nil, read: nil, write: nil, close: nil)
