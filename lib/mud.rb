@@ -16,4 +16,5 @@ module Mud
   end
 
   def self.logger = configuration.logger
+  def self.server = Telnet::Server.instance
 end

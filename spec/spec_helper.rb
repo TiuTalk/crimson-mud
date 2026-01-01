@@ -25,6 +25,8 @@ end
 require 'mud'
 
 Mud.configure do |config|
+  config.host = '127.0.0.1'
+  config.port = 4001
   config.logger = Logger.new(nil)
 end
 

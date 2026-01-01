@@ -1,21 +1,20 @@
 # frozen_string_literal: true
 
+require 'singleton'
 require 'socket'
 
 module Mud
   module Telnet
     class Server
-      attr_reader :host, :port
+      include Singleton
 
-      def initialize(host: '0.0.0.0', port: 4000)
-        @host = host
-        @port = port
+      def initialize
         @server = nil
       end
 
       def start
-        @server = TCPServer.new(@host, @port)
-        Mud.logger.info("Server listening on #{@host}:#{@port}")
+        @server = TCPServer.new(host, port)
+        Mud.logger.info("Server listening on #{host}:#{port}")
 
         loop do
           Thread.start(@server.accept) do |socket|
@@ -45,6 +44,9 @@ module Mud
       end
 
       private
+
+      def host = Mud.configuration.host
+      def port = Mud.configuration.port
 
       def log_connect(client)
         Mud.logger.info("Connected: #{client.remote_address}")

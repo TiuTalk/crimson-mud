@@ -3,12 +3,13 @@
 require 'logger'
 
 RSpec.describe Mud::Telnet::Server do
-  subject(:server) { described_class.new(host: '127.0.0.1', port: 4000) }
+  subject(:server) { described_class.instance }
 
   let(:logger) { instance_double(Logger, info: nil, error: nil) }
   let(:tcp_server) { instance_double(TCPServer, close: nil, closed?: false) }
 
   before do
+    server.instance_variable_set(:@server, nil)
     allow(Mud).to receive(:logger).and_return(logger)
     allow(TCPServer).to receive(:new).and_return(tcp_server)
     allow(tcp_server).to receive(:accept).and_raise(IOError)
@@ -17,7 +18,7 @@ RSpec.describe Mud::Telnet::Server do
   describe '#start' do
     it 'binds socket and logs' do
       server.start
-      expect(TCPServer).to have_received(:new).with('127.0.0.1', 4000)
+      expect(TCPServer).to have_received(:new).with('127.0.0.1', 4001)
       expect(logger).to have_received(:info).with(/listening/)
     end
   end
