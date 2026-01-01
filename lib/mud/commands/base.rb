@@ -5,7 +5,7 @@ module Mud
     class Base
       class << self
         def command(*keywords)
-          keywords.each { Registry.register(_1, self) }
+          Registry.register(*keywords, self)
         end
 
         def execute(player, args = '')

@@ -1,12 +1,22 @@
 # frozen_string_literal: true
 
 RSpec.describe Mud::Commands::Registry do
-  after { described_class.unregister(:test) }
+  let(:command) { Class.new(Mud::Commands::Base) }
+
+  after { described_class.unregister(:test, :t) }
 
   describe '.register' do
-    it 'stores keyword as string to class mapping' do
-      described_class.register(:test, String)
-      expect(described_class.lookup('test')).to eq(String)
+    it 'stores keyword to class mapping' do
+      described_class.register(:test, command)
+      expect(described_class.lookup('test')).to eq(command)
+    end
+
+    context 'with multiple keywords' do
+      it 'registers all keywords' do
+        described_class.register(:test, :t, command)
+        expect(described_class.lookup('test')).to eq(command)
+        expect(described_class.lookup('t')).to eq(command)
+      end
     end
   end
 
@@ -16,14 +26,44 @@ RSpec.describe Mud::Commands::Registry do
     end
 
     it 'returns registered class' do
-      described_class.register(:test, Integer)
-      expect(described_class.lookup('test')).to eq(Integer)
+      described_class.register(:test, command)
+      expect(described_class.lookup('test')).to eq(command)
+    end
+
+    context 'with abbreviations' do
+      let(:look_command) { Class.new(Mud::Commands::Base) }
+      let(:list_command) { Class.new(Mud::Commands::Base) }
+
+      before do
+        described_class.register(:look, look_command)
+        described_class.register(:list, list_command)
+      end
+
+      after { described_class.unregister(:look, :list) }
+
+      it { expect(described_class.lookup('loo')).to eq(look_command) }
+      it { expect(described_class.lookup('li')).to eq(list_command) }
+      it { expect(described_class.lookup('l')).to be_nil }
+    end
+
+    context 'with exact match over abbreviation' do
+      let(:look_command) { Class.new(Mud::Commands::Base) }
+      let(:lo_command) { Class.new(Mud::Commands::Base) }
+
+      before do
+        described_class.register(:look, look_command)
+        described_class.register(:lo, lo_command)
+      end
+
+      after { described_class.unregister(:look, :lo) }
+
+      it { expect(described_class.lookup('lo')).to eq(lo_command) }
     end
   end
 
   describe '.unregister' do
     it 'removes single registration' do
-      described_class.register(:test, String)
+      described_class.register(:test, command)
       described_class.unregister(:test)
       expect(described_class.lookup('test')).to be_nil
     end

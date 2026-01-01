@@ -2,12 +2,14 @@ PATH
   remote: .
   specs:
     mud (0.1.0)
+      abbrev
       logger
       zeitwerk (~> 2.7)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    abbrev (0.1.2)
     ast (2.4.3)
     date (3.5.1)
     diff-lcs (1.6.2)
@@ -106,6 +108,7 @@ DEPENDENCIES
   simplecov
 
 CHECKSUMS
+  abbrev (0.1.2) sha256=ad1b4eaaaed4cb722d5684d63949e4bde1d34f2a95e20db93aecfe7cbac74242
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
   date (3.5.1) sha256=750d06384d7b9c15d562c76291407d89e368dda4d4fff957eb94962d325a0dc0
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962

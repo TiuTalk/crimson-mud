@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   # Runtime dependencies
+  spec.add_dependency 'abbrev'
   spec.add_dependency 'logger'
   spec.add_dependency 'zeitwerk', '~> 2.7'
 

@@ -1,22 +1,34 @@
 # frozen_string_literal: true
 
+require 'abbrev'
+
 module Mud
   module Commands
     module Registry
       @commands = {}
-      @mutex = Mutex.new
+      @abbreviations = {}
 
       class << self
-        def register(keyword, klass)
-          @mutex.synchronize { @commands[keyword.to_s] = klass }
+        def register(*keywords, klass)
+          keywords.each { @commands[normalize_keyword(_1)] = klass }
+          build_abbreviations
         end
 
         def lookup(keyword)
-          @mutex.synchronize { @commands[keyword] }
+          @commands[@abbreviations[normalize_keyword(keyword)]]
         end
 
-        def unregister(keyword)
-          @mutex.synchronize { @commands.delete(keyword.to_s) }
+        def unregister(*keywords)
+          keywords.each { @commands.delete(normalize_keyword(_1)) }
+          build_abbreviations
+        end
+
+        private
+
+        def normalize_keyword(keyword) = keyword.to_s.downcase.to_sym
+
+        def build_abbreviations
+          @abbreviations = @commands.keys.map(&:to_s).abbrev.to_h { |k, v| [k.to_sym, v.to_sym] }
         end
       end
     end
