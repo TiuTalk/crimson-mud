@@ -14,11 +14,17 @@ module Mud
       @client = client
     end
 
-    def run
-      while (input = gets&.chomp)
-        break if input == 'quit'
+    def quit
+      close
+    end
 
-        puts(input)
+    def run
+      processor = Commands::Processor.new(player: self)
+
+      while (input = gets&.chomp)
+        next if input.strip.empty?
+
+        processor.process(input)
       end
     ensure
       close

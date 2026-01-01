@@ -13,17 +13,28 @@ RSpec.describe Mud::Player do
     end
   end
 
+  describe '#quit' do
+    it 'closes the client' do
+      player.quit
+      expect(client).to have_received(:close)
+    end
+  end
+
   describe '#run' do
-    it 'echoes chomped input back' do
-      allow(client).to receive(:gets).and_return("hello\n", nil)
+    let(:processor) { instance_double(Mud::Commands::Processor, process: nil) }
+
+    before { allow(Mud::Commands::Processor).to receive(:new).and_return(processor) }
+
+    it 'processes input via processor' do
+      allow(client).to receive(:gets).and_return("say hello\n", nil)
       player.run
-      expect(client).to have_received(:puts).with('hello')
+      expect(processor).to have_received(:process).with('say hello')
     end
 
-    it 'breaks on quit' do
-      allow(client).to receive(:gets).and_return("quit\n")
+    it 'skips empty input' do
+      allow(client).to receive(:gets).and_return("  \n", nil)
       player.run
-      expect(client).not_to have_received(:puts)
+      expect(processor).not_to have_received(:process)
     end
 
     it 'closes client on exit' do

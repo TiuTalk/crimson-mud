@@ -34,6 +34,9 @@ bundle exec rubocop --format=simple --autocorrect-all
 ### Player
 - `Mud::Player` - Game loop per connection, delegates I/O to Client
 
+### Commands
+- `Mud::Commands::Processor` - Parses and dispatches player input to command methods
+
 ### Configuration
 - `Mud.configure { |c| ... }` - Block-style configuration
 - `Mud.logger` - Centralized logger access

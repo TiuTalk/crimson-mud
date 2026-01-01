@@ -10,10 +10,10 @@ Ruby MUD server targeting [TinyMUD](https://github.com/nickgammon/tinymudserver)
 
 ## Phase 1: Command System
 
-- [ ] Command parser (split input into command + args)
-- [ ] Command dispatcher/registry
+- [x] Command parser (split input into command + args)
+- [x] Command dispatcher/registry
 - [ ] `help` - list available commands
-- [ ] `quit` - clean disconnect (enhance existing)
+- [x] `quit` - clean disconnect (enhance existing)
 
 ## Phase 2: World Foundation
 
@@ -24,7 +24,7 @@ Ruby MUD server targeting [TinyMUD](https://github.com/nickgammon/tinymudserver)
 ## Phase 3: Players
 
 - [ ] Player class (name, current_room)
-- [ ] Player registry (track connected players)
+- [x] Player registry (track connected players)
 - [ ] Login flow (name selection, no password)
 - [ ] Place player in starting room on connect
 - [ ] `look` - include other players in room
@@ -38,7 +38,7 @@ Ruby MUD server targeting [TinyMUD](https://github.com/nickgammon/tinymudserver)
 
 ## Phase 5: Communication
 
-- [ ] `say <message>` - broadcast to current room
+- [x] `say <message>` - broadcast to current room
 - [ ] `tell <player> <message>` - private message
 
 ## Phase 6: Inventory (Future)
