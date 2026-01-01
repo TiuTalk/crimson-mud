@@ -8,8 +8,33 @@ module Mud
     class Server
       include Singleton
 
+      attr_reader :players
+
       def initialize
         @server = nil
+        @players = []
+        @players_mutex = Mutex.new
+      end
+
+      def add_player(player)
+        @players_mutex.synchronize { @players << player }
+      end
+
+      def remove_player(player)
+        @players_mutex.synchronize { @players.delete(player) }
+      end
+
+      def clear_players
+        @players_mutex.synchronize { @players.clear }
+      end
+
+      def broadcast(message, except: nil)
+        players = @players_mutex.synchronize { @players.dup }
+        players.each do |player|
+          next if player == except
+
+          player.puts(message)
+        end
       end
 
       def start
@@ -36,10 +61,13 @@ module Mud
 
       def handle_client(socket:)
         client = Client.new(socket:)
+        player = Player.new(client:)
         log_connect(client)
         client.puts('Welcome to Crimson MUD!')
-        Player.new(client:).run
+        add_player(player)
+        player.run
       ensure
+        remove_player(player)
         log_disconnect(client)
       end
 

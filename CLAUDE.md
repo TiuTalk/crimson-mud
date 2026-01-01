@@ -52,8 +52,7 @@ bundle exec rubocop --format=simple --autocorrect-all
 2. **Green** - Minimal code to pass
 3. **Refactor** - Clean up, keep tests green
 
-## Dependencies
+## Testing Guidance
 
-- Ruby >= 3.2
-- zeitwerk - Autoloading
-- logger - Logging
+- Never use `instance_variable_set/get` in specs
+- Name game objects with personas (alice/bob) not numbers (player1/player2)
