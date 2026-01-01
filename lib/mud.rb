@@ -3,6 +3,7 @@
 require 'zeitwerk'
 loader = Zeitwerk::Loader.for_gem
 loader.setup
+loader.eager_load_dir("#{__dir__}/mud/commands")
 
 module Mud
   class Error < StandardError; end

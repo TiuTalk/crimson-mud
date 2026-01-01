@@ -11,10 +11,10 @@ module Mud
 
       def process(input)
         command, args = parse(input)
-        method_name = "cmd_#{command}"
+        command_class = Registry.lookup(command.downcase)
 
-        if respond_to?(method_name, true)
-          send(method_name, args)
+        if command_class
+          command_class.new(player:).execute(args:)
         else
           player.puts("Unknown command: #{command}")
         end
@@ -25,16 +25,6 @@ module Mud
       def parse(input)
         parts = input.strip.split(' ', 2)
         [parts[0], parts[1].to_s]
-      end
-
-      def cmd_quit(_args)
-        player.quit
-      end
-
-      def cmd_say(args)
-        message = args.strip
-        player.puts("You say '#{message}'")
-        Mud.server.broadcast("Someone says '#{message}'", except: player)
       end
     end
   end
