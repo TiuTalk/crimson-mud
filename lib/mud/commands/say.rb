@@ -7,8 +7,8 @@ module Mud
 
       def perform(args)
         message = Color.strip(args.strip)
-        player.puts("You say '#{message}'")
-        server.broadcast("Someone says '#{message}'", except: player)
+        player.puts("&cYou say '#{message}'")
+        server.broadcast("&cSomeone says '#{message}'", except: player)
       end
     end
   end

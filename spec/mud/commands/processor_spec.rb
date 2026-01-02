@@ -19,12 +19,12 @@ RSpec.describe Mud::Commands::Processor do
     context 'with say command' do
       it 'tells speaker what they said' do
         processor.process('say hello world')
-        expect(player).to have_received(:puts).with("You say 'hello world'")
+        expect(player).to have_received(:puts).with("&cYou say 'hello world'")
       end
 
       it 'broadcasts to others' do
         processor.process('say hello world')
-        expect(server).to have_received(:broadcast).with("Someone says 'hello world'", except: player)
+        expect(server).to have_received(:broadcast).with("&cSomeone says 'hello world'", except: player)
       end
     end
 

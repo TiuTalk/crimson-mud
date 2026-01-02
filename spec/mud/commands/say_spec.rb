@@ -14,25 +14,25 @@ RSpec.describe Mud::Commands::Say do
     it 'echoes message to player' do
       described_class.new(player:).perform('hello')
 
-      expect(player).to have_received(:puts).with("You say 'hello'")
+      expect(player).to have_received(:puts).with("&cYou say 'hello'")
     end
 
     it 'broadcasts to other players' do
       described_class.new(player:).perform('hello')
 
-      expect(server).to have_received(:broadcast).with("Someone says 'hello'", except: player)
+      expect(server).to have_received(:broadcast).with("&cSomeone says 'hello'", except: player)
     end
 
     it 'strips whitespace from message' do
       described_class.new(player:).perform('  hello world  ')
 
-      expect(player).to have_received(:puts).with("You say 'hello world'")
+      expect(player).to have_received(:puts).with("&cYou say 'hello world'")
     end
 
     it 'strips color codes from message' do
       described_class.new(player:).perform('&rhello')
 
-      expect(player).to have_received(:puts).with("You say 'hello'")
+      expect(player).to have_received(:puts).with("&cYou say 'hello'")
     end
   end
 end
