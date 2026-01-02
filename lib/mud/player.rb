@@ -8,7 +8,11 @@ module Mud
 
     attr_reader :name, :client
 
-    def_delegators :client, :gets, :puts, :read, :write, :close
+    def_delegators :client, :gets, :read, :write, :close
+
+    def puts(text)
+      client.puts(Color.colorize(text))
+    end
 
     def initialize(name:, client:)
       @name = name

@@ -31,6 +31,13 @@ RSpec.describe Mud::Player do
     end
   end
 
+  describe '#puts' do
+    it 'colorizes text and delegates to client' do
+      player.puts('&Rhello')
+      expect(client).to have_received(:puts).with("\e[91mhello\e[0m")
+    end
+  end
+
   describe '#run' do
     let(:processor) { instance_double(Mud::Commands::Processor, process: nil) }
 
@@ -58,11 +65,6 @@ RSpec.describe Mud::Player do
     it 'delegates #gets to client' do
       allow(client).to receive(:gets).and_return('input')
       expect(player.gets).to eq('input')
-    end
-
-    it 'delegates #puts to client' do
-      player.puts('hello')
-      expect(client).to have_received(:puts).with('hello')
     end
 
     it 'delegates #read to client' do
