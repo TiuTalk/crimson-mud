@@ -52,4 +52,14 @@ RSpec.describe Mud::Color do
       it { is_expected.to eq "\e[34mBlue\e[0m" }
     end
   end
+
+  describe '.strip' do
+    it 'removes color codes and converts escaped ampersands' do
+      expect(described_class.strip('&rRed && &gGreen')).to eq 'Red & Green'
+    end
+
+    it 'returns unchanged text without ampersands' do
+      expect(described_class.strip('Hello world')).to eq 'Hello world'
+    end
+  end
 end

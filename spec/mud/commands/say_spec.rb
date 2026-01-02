@@ -28,5 +28,11 @@ RSpec.describe Mud::Commands::Say do
 
       expect(player).to have_received(:puts).with("You say 'hello world'")
     end
+
+    it 'strips color codes from message' do
+      described_class.new(player:).perform('&rhello')
+
+      expect(player).to have_received(:puts).with("You say 'hello'")
+    end
   end
 end

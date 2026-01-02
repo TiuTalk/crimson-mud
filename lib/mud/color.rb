@@ -24,6 +24,15 @@ module Mud
           .then { append_reset_if_needed(_1) }
       end
 
+      def strip(text)
+        return text unless text.include?('&')
+
+        text
+          .then { escape_ampersands(_1) }
+          .then { strip_codes(_1) }
+          .then { restore_ampersands(_1) }
+      end
+
       private
 
       def escape_ampersands(text)
@@ -37,6 +46,10 @@ module Mud
 
       def restore_ampersands(text)
         text.gsub(PLACEHOLDER, '&')
+      end
+
+      def strip_codes(text)
+        text.gsub(/&[#{CODES.keys.join}]/, '')
       end
 
       def append_reset_if_needed(text)
