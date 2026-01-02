@@ -25,7 +25,7 @@ Ruby MUD server targeting [TinyMUD](https://github.com/nickgammon/tinymudserver)
 
 - [ ] Player class (name, current_room)
 - [x] Player registry (track connected players)
-- [ ] Login flow (name selection, no password)
+- [x] Login flow (name selection, no password)
 - [ ] Place player in starting room on connect
 - [ ] `look` - include other players in room
 - [ ] `who` - list connected players

@@ -61,13 +61,18 @@ module Mud
 
       def handle_client(socket:)
         client = Client.new(socket:)
-        player = Player.new(client:)
         log_connect(client)
         client.puts('Welcome to Crimson MUD!')
+        client.puts('What is your name?')
+        name = client.gets&.chomp
+        return if name.nil? || name.empty?
+
+        client.puts("Welcome, #{name}!")
+        player = Player.new(name:, client:)
         add_player(player)
         player.run
       ensure
-        remove_player(player)
+        remove_player(player) if player
         log_disconnect(client)
       end
 

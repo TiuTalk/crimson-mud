@@ -75,14 +75,52 @@ RSpec.describe Mud::Telnet::Server do
 
   describe '#handle_client' do
     let(:socket) do
-      instance_double(TCPSocket, puts: nil, gets: nil, close: nil, closed?: false,
+      instance_double(TCPSocket, puts: nil, close: nil, closed?: false,
         read: nil, write: nil, remote_address: addrinfo)
     end
     let(:addrinfo) { instance_double(Addrinfo, ip_address: '127.0.0.1', ip_port: 12_345) }
 
+    before { allow(socket).to receive(:gets).and_return("Alice\n", nil) }
+
     it 'sends welcome message' do
       server.handle_client(socket:)
       expect(socket).to have_received(:puts).with('Welcome to Crimson MUD!')
+    end
+
+    it 'prompts for name' do
+      server.handle_client(socket:)
+      expect(socket).to have_received(:puts).with('What is your name?')
+    end
+
+    it 'greets player by name' do
+      server.handle_client(socket:)
+      expect(socket).to have_received(:puts).with('Welcome, Alice!')
+    end
+
+    it 'creates player with name' do
+      allow(Mud::Player).to receive(:new).and_call_original
+      server.handle_client(socket:)
+      expect(Mud::Player).to have_received(:new).with(name: 'Alice', client: anything)
+    end
+
+    context 'when name is empty' do
+      before { allow(socket).to receive(:gets).and_return("\n") }
+
+      it 'does not create player' do
+        allow(Mud::Player).to receive(:new)
+        server.handle_client(socket:)
+        expect(Mud::Player).not_to have_received(:new)
+      end
+    end
+
+    context 'when client disconnects during name prompt' do
+      before { allow(socket).to receive(:gets).and_return(nil) }
+
+      it 'does not create player' do
+        allow(Mud::Player).to receive(:new)
+        server.handle_client(socket:)
+        expect(Mud::Player).not_to have_received(:new)
+      end
     end
 
     it 'logs connection' do

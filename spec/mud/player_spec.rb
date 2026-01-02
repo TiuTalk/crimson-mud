@@ -1,10 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe Mud::Player do
-  subject(:player) { described_class.new(client:) }
+  subject(:player) { described_class.new(client:, name: 'Alice') }
 
   let(:client) do
     instance_double(Mud::Telnet::Client, gets: nil, puts: nil, read: nil, write: nil, close: nil)
+  end
+
+  describe '#name' do
+    it 'returns the name' do
+      expect(player.name).to eq('Alice')
+    end
   end
 
   describe '#client' do
@@ -14,6 +20,11 @@ RSpec.describe Mud::Player do
   end
 
   describe '#quit' do
+    it 'says goodbye' do
+      player.quit
+      expect(client).to have_received(:puts).with('Goodbye, Alice!')
+    end
+
     it 'closes the client' do
       player.quit
       expect(client).to have_received(:close)
