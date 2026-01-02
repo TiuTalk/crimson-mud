@@ -68,4 +68,12 @@ RSpec.describe Mud::Commands::Registry do
       expect(described_class.lookup('test')).to be_nil
     end
   end
+
+  describe '.keywords' do
+    before { described_class.register(:test, :t, command) }
+
+    it 'returns sorted registered keywords' do
+      expect(described_class.keywords).to include(:t, :test)
+    end
+  end
 end

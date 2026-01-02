@@ -23,6 +23,10 @@ module Mud
           build_abbreviations
         end
 
+        def keywords
+          @commands.keys.sort
+        end
+
         private
 
         def normalize_keyword(keyword) = keyword.to_s.downcase.to_sym

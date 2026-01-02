@@ -12,7 +12,7 @@ Ruby MUD server targeting [TinyMUD](https://github.com/nickgammon/tinymudserver)
 
 - [x] Command parser (split input into command + args)
 - [x] Command dispatcher/registry
-- [ ] `help` - list available commands
+- [x] `commands` - list available commands
 - [x] `quit` - clean disconnect (enhance existing)
 
 ## Phase 2: World Foundation
