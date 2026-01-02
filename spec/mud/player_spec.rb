@@ -36,6 +36,16 @@ RSpec.describe Mud::Player do
       player.puts('&Rhello')
       expect(client).to have_received(:puts).with("\e[91mhello\e[0m")
     end
+
+    it 'writes colorized prompt after output' do
+      player.puts('hello')
+      expect(client).to have_received(:write).with("\n\e[91m100\e[31mHp \e[94m80\e[34mMn \e[93m75\e[33mmv\e[0m > ")
+    end
+
+    it 'skips prompt when prompt: false' do
+      player.puts('hello', prompt: false)
+      expect(client).not_to have_received(:write)
+    end
   end
 
   describe '#run' do

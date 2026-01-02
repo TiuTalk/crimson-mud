@@ -67,9 +67,9 @@ module Mud
         name = client.gets&.chomp
         return if name.nil? || name.empty?
 
-        client.puts("Welcome, #{name}!")
         player = Player.new(name:, client:)
         add_player(player)
+        player.puts("Welcome, #{name}!")
         player.run
       ensure
         remove_player(player) if player

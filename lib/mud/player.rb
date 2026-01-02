@@ -10,10 +10,6 @@ module Mud
 
     def_delegators :client, :gets, :read, :write, :close
 
-    def puts(text)
-      client.puts(Color.colorize(text))
-    end
-
     def initialize(name:, client:)
       @name = name
       @client = client
@@ -34,6 +30,21 @@ module Mud
       end
     ensure
       close
+    end
+
+    def puts(text, prompt: true)
+      client.puts(Color.colorize(text))
+      write_prompt if prompt
+    end
+
+    private
+
+    def write_prompt
+      write("\n#{Color.colorize(prompt)} > ")
+    end
+
+    def prompt
+      '&R100&rHp &B80&bMn &Y75&ymv'
     end
   end
 end
