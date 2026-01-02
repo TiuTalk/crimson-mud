@@ -35,11 +35,14 @@ bundle exec rubocop --format=simple --autocorrect-all
 - `Mud::Player` - Game loop per connection, delegates I/O to Client
 
 ### Commands
-- `Mud::Commands::Processor` - Parses and dispatches player input to command methods
+- `Mud::Commands::Base` - Inherit to create commands, use `command :keyword` DSL to register
+- `Mud::Commands::Registry` - Stores commands, supports abbreviations via `Abbrev`
+- `Mud::Commands::Processor` - Parses input, looks up command in Registry, executes
 
 ### Configuration
 - `Mud.configure { |c| ... }` - Block-style configuration
 - `Mud.logger` - Centralized logger access
+- `Mud.server` - Returns `Mud::Telnet::Server.instance` (Singleton)
 
 ## Code Standards
 
