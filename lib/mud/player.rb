@@ -28,6 +28,8 @@ module Mud
 
         processor.process(input)
       end
+    rescue IOError
+      # Socket closed (quit or network drop)
     ensure
       close
     end

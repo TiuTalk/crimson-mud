@@ -69,6 +69,11 @@ RSpec.describe Mud::Player do
       player.run
       expect(client).to have_received(:close)
     end
+
+    it 'handles IOError from closed socket' do
+      allow(client).to receive(:gets).and_raise(IOError, 'closed stream')
+      expect { player.run }.not_to raise_error
+    end
   end
 
   describe 'delegations' do
