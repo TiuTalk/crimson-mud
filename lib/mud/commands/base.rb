@@ -18,6 +18,7 @@ module Mud
       end
 
       def execute(args:)
+        Mud.logger.debug("#{player.name} executing: #{self.class.name}")
         perform(args)
       end
 

@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe Mud::Commands::Base do
-  let(:player) { instance_double(Mud::Player, puts: nil) }
+  let(:player) { instance_double(Mud::Player, puts: nil, name: 'Alice') }
+  let(:logger) { instance_double(Logger, debug: nil) }
+
+  before { allow(Mud).to receive(:logger).and_return(logger) }
 
   describe '.command' do
     after { Mud::Commands::Registry.unregister(:test) }
@@ -35,10 +38,17 @@ RSpec.describe Mud::Commands::Base do
   end
 
   describe '#execute' do
+    let(:test_class) { Class.new(described_class) { def perform(args) = player.puts(args) } }
+
     it 'calls perform with args' do
-      test_class = Class.new(described_class) { def perform(args) = player.puts(args) }
       test_class.new(player:).execute(args: 'test')
       expect(player).to have_received(:puts).with('test')
+    end
+
+    it 'logs command execution' do
+      stub_const('TestCommand', test_class)
+      TestCommand.new(player:).execute(args: 'test')
+      expect(logger).to have_received(:debug).with('Alice executing: TestCommand')
     end
   end
 end

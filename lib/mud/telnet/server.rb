@@ -61,19 +61,19 @@ module Mud
 
       def handle_client(socket:)
         client = Client.new(socket:)
-        log_connect(client)
         client.puts('Welcome to Crimson MUD!')
         client.puts('What is your name?')
         name = client.gets&.chomp
         return if name.nil? || name.empty?
 
         player = Player.new(name:, client:)
+        log_connect(player)
         add_player(player)
         player.puts("Welcome, #{name}!")
         player.run
       ensure
         remove_player(player) if player
-        log_disconnect(client)
+        log_disconnect(client, player)
       end
 
       private
@@ -81,12 +81,13 @@ module Mud
       def host = Mud.configuration.host
       def port = Mud.configuration.port
 
-      def log_connect(client)
-        Mud.logger.info("Connected: #{client.remote_address}")
+      def log_connect(player)
+        Mud.logger.info("Connected: #{player.name} (#{player.remote_address})")
       end
 
-      def log_disconnect(client)
-        Mud.logger.info("Disconnected: #{client.remote_address}")
+      def log_disconnect(client, player)
+        identifier = player ? "#{player.name} (#{client.remote_address})" : client.remote_address
+        Mud.logger.info("Disconnected: #{identifier}")
       end
     end
   end

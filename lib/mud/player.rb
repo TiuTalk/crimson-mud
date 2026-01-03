@@ -8,7 +8,7 @@ module Mud
 
     attr_reader :name, :client
 
-    def_delegators :client, :gets, :read, :write, :close
+    def_delegators :client, :gets, :read, :write, :close, :remote_address
 
     def initialize(name:, client:)
       @name = name
@@ -26,6 +26,7 @@ module Mud
       while (input = gets&.chomp)
         next if input.strip.empty?
 
+        Mud.logger.debug("#{name}: #{input}")
         processor.process(input)
       end
     rescue IOError

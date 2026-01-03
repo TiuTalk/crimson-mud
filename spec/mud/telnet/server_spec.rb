@@ -123,14 +123,28 @@ RSpec.describe Mud::Telnet::Server do
       end
     end
 
-    it 'logs connection' do
+    it 'logs connection with player name' do
       server.handle_client(socket:)
-      expect(logger).to have_received(:info).with(/Connected.*127.0.0.1:12345/)
+      expect(logger).to have_received(:info).with('Connected: Alice (127.0.0.1:12345)')
     end
 
-    it 'logs disconnection' do
+    it 'logs disconnection with player name' do
       server.handle_client(socket:)
-      expect(logger).to have_received(:info).with(/Disconnected.*127.0.0.1:12345/)
+      expect(logger).to have_received(:info).with('Disconnected: Alice (127.0.0.1:12345)')
+    end
+
+    context 'when client disconnects before entering name' do
+      before { allow(socket).to receive(:gets).and_return(nil) }
+
+      it 'does not log connection' do
+        server.handle_client(socket:)
+        expect(logger).not_to have_received(:info).with(/Connected/)
+      end
+
+      it 'logs disconnection with IP only' do
+        server.handle_client(socket:)
+        expect(logger).to have_received(:info).with('Disconnected: 127.0.0.1:12345')
+      end
     end
 
     it 'removes player from registry on disconnect' do

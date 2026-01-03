@@ -3,10 +3,13 @@
 RSpec.describe Mud::Commands::Processor do
   subject(:processor) { described_class.new(player:) }
 
-  let(:player) { instance_double(Mud::Player, puts: nil, quit: nil) }
+  let(:player) { instance_double(Mud::Player, puts: nil, quit: nil, name: 'Alice') }
   let(:server) { instance_double(Mud::Telnet::Server, broadcast: nil) }
+  let(:logger) { instance_double(Logger, debug: nil) }
 
-  before { allow(Mud).to receive(:server).and_return(server) }
+  before do
+    allow(Mud).to receive_messages(server:, logger:)
+  end
 
   describe '#process' do
     context 'with quit command' do

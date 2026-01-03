@@ -4,8 +4,12 @@ RSpec.describe Mud::Player do
   subject(:player) { described_class.new(client:, name: 'Alice') }
 
   let(:client) do
-    instance_double(Mud::Telnet::Client, gets: nil, puts: nil, read: nil, write: nil, close: nil)
+    instance_double(Mud::Telnet::Client, gets: nil, puts: nil, read: nil, write: nil, close: nil,
+      remote_address: '127.0.0.1:12345')
   end
+  let(:logger) { instance_double(Logger, debug: nil) }
+
+  before { allow(Mud).to receive(:logger).and_return(logger) }
 
   describe '#name' do
     it 'returns the name' do
@@ -57,6 +61,12 @@ RSpec.describe Mud::Player do
       allow(client).to receive(:gets).and_return("say hello\n", nil)
       player.run
       expect(processor).to have_received(:process).with('say hello')
+    end
+
+    it 'logs input at debug level' do
+      allow(client).to receive(:gets).and_return("say hello\n", nil)
+      player.run
+      expect(logger).to have_received(:debug).with('Alice: say hello')
     end
 
     it 'skips empty input' do
