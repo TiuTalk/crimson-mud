@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.describe Mud::Player do
-  subject(:player) { described_class.new(client:, name: 'Alice') }
+  subject(:player) { described_class.new(name: 'Alice', room:, client:) }
 
   let(:client) do
     instance_double(Mud::Telnet::Client, gets: nil, puts: nil, read: nil, write: nil, close: nil,
       remote_address: '127.0.0.1:12345')
   end
+  let(:room) { Mud::Room.new(name: 'The Void', description: 'Empty.') }
   let(:logger) { instance_double(Logger, debug: nil) }
 
   before { allow(Mud).to receive(:logger).and_return(logger) }
@@ -20,6 +21,12 @@ RSpec.describe Mud::Player do
   describe '#client' do
     it 'returns the client' do
       expect(player.client).to eq(client)
+    end
+  end
+
+  describe '#room' do
+    it 'returns the room' do
+      expect(player.room).to eq(room)
     end
   end
 

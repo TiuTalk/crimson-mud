@@ -6,12 +6,13 @@ module Mud
   class Player
     extend Forwardable
 
-    attr_reader :name, :client
+    attr_reader :name, :room, :client
 
     def_delegators :client, :gets, :read, :write, :close, :remote_address
 
-    def initialize(name:, client:)
+    def initialize(name:, room:, client:)
       @name = name
+      @room = room
       @client = client
     end
 

@@ -17,7 +17,7 @@ Ruby MUD server targeting [TinyMUD](https://github.com/nickgammon/tinymudserver)
 
 ## Phase 2: World Foundation
 
-- [ ] Room class (id, name, description, exits hash)
+- [x] Room class (id, name, description, exits hash)
 - [ ] In-memory world with hardcoded rooms (3-5 connected)
 - [ ] `look` - show current room description + exits
 

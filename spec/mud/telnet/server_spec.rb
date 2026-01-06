@@ -97,10 +97,10 @@ RSpec.describe Mud::Telnet::Server do
       expect(socket).to have_received(:puts).with('Welcome, Alice!')
     end
 
-    it 'creates player with name' do
+    it 'creates player with name and starting room' do
       allow(Mud::Player).to receive(:new).and_call_original
       server.handle_client(socket:)
-      expect(Mud::Player).to have_received(:new).with(name: 'Alice', client: anything)
+      expect(Mud::Player).to have_received(:new).with(name: 'Alice', room: Mud::Room.starting, client: anything)
     end
 
     context 'when name is empty' do
