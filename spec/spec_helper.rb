@@ -24,6 +24,8 @@ end
 
 require 'mud'
 
+Dir[File.join(__dir__, 'support', '**', '*.rb')].each { |f| require f }
+
 Mud.configure do |config|
   config.host = '127.0.0.1'
   config.port = 4001

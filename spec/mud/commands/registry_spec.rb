@@ -31,33 +31,28 @@ RSpec.describe Mud::Commands::Registry do
     end
 
     context 'with abbreviations' do
-      let(:look_command) { Class.new(Mud::Commands::Base) }
-      let(:list_command) { Class.new(Mud::Commands::Base) }
+      let(:loot_command) { Class.new(Mud::Commands::Base) }
 
-      before do
-        described_class.register(:look, look_command)
-        described_class.register(:list, list_command)
-      end
+      before { described_class.register(:loot, loot_command) }
+      after { described_class.unregister(:loot) }
 
-      after { described_class.unregister(:look, :list) }
-
-      it { expect(described_class.lookup('loo')).to eq(look_command) }
-      it { expect(described_class.lookup('li')).to eq(list_command) }
-      it { expect(described_class.lookup('l')).to be_nil }
+      it { expect(described_class.lookup('look')).to eq(Mud::Commands::Look) }
+      it { expect(described_class.lookup('loot')).to eq(loot_command) }
+      it { expect(described_class.lookup('loo')).to be_nil }
     end
 
     context 'with exact match over abbreviation' do
-      let(:look_command) { Class.new(Mud::Commands::Base) }
-      let(:lo_command) { Class.new(Mud::Commands::Base) }
+      let(:loot_command) { Class.new(Mud::Commands::Base) }
+      let(:loo_command) { Class.new(Mud::Commands::Base) }
 
       before do
-        described_class.register(:look, look_command)
-        described_class.register(:lo, lo_command)
+        described_class.register(:loot, loot_command)
+        described_class.register(:loo, loo_command)
       end
 
-      after { described_class.unregister(:look, :lo) }
+      after { described_class.unregister(:loot, :loo) }
 
-      it { expect(described_class.lookup('lo')).to eq(lo_command) }
+      it { expect(described_class.lookup('loo')).to eq(loo_command) }
     end
   end
 

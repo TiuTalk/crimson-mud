@@ -6,9 +6,7 @@ RSpec.describe Mud::Commands::Say do
 
   before { allow(Mud).to receive(:server).and_return(server) }
 
-  it 'registers as say' do
-    expect(Mud::Commands::Registry.lookup('say')).to eq(described_class)
-  end
+  it_behaves_like 'a registered command', 'say'
 
   describe '#perform' do
     it 'echoes message to player' do

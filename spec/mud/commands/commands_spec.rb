@@ -3,9 +3,7 @@
 RSpec.describe Mud::Commands::Commands do
   let(:player) { instance_double(Mud::Player, puts: nil) }
 
-  it 'registers as commands' do
-    expect(Mud::Commands::Registry.lookup('commands')).to eq(described_class)
-  end
+  it_behaves_like 'a registered command', 'commands'
 
   describe '#perform' do
     before do
@@ -17,14 +15,18 @@ RSpec.describe Mud::Commands::Commands do
       let(:keywords) { %i[a bb ccc dddd e f g h] }
       let(:expected) { "Available commands:\na        bb       ccc      dddd\ne        f        g        h" }
 
-      it { expect(player).to have_received(:puts).with(expected) }
+      it 'lists commands in 4-column format' do
+        expect(player).to have_received(:puts).with(expected)
+      end
     end
 
     context 'with varied length keywords' do
       let(:keywords) { %i[a longcommand] }
       let(:expected) { "Available commands:\na               longcommand" }
 
-      it { expect(player).to have_received(:puts).with(expected) }
+      it 'pads columns to longest keyword' do
+        expect(player).to have_received(:puts).with(expected)
+      end
     end
   end
 end

@@ -3,9 +3,7 @@
 RSpec.describe Mud::Commands::Quit do
   let(:player) { instance_double(Mud::Player, quit: nil) }
 
-  it 'registers as quit' do
-    expect(Mud::Commands::Registry.lookup('quit')).to eq(described_class)
-  end
+  it_behaves_like 'a registered command', 'quit'
 
   describe '#perform' do
     it 'calls player.quit' do
