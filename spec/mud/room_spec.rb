@@ -6,6 +6,8 @@ RSpec.describe Mud::Room do
   let(:alice) { instance_double(Mud::Player, puts: nil) }
   let(:bob) { instance_double(Mud::Player, puts: nil) }
 
+  it_behaves_like 'has players'
+
   describe '#name' do
     it { expect(room.name).to eq('Town Square') }
   end
@@ -16,44 +18,5 @@ RSpec.describe Mud::Room do
 
   describe '.starting' do
     it { expect(described_class.starting.name).to eq('The Void') }
-  end
-
-  describe '#players' do
-    it { expect(room.players).to be_empty }
-  end
-
-  describe '#add_player' do
-    it 'adds player to room' do
-      room.add_player(alice)
-      expect(room.players).to include(alice)
-    end
-  end
-
-  describe '#remove_player' do
-    before { room.add_player(alice) }
-
-    it 'removes player from room' do
-      room.remove_player(alice)
-      expect(room.players).not_to include(alice)
-    end
-  end
-
-  describe '#broadcast' do
-    before do
-      room.add_player(alice)
-      room.add_player(bob)
-    end
-
-    it 'sends message to all players in room' do
-      room.broadcast('Hello')
-      expect(alice).to have_received(:puts).with('Hello')
-      expect(bob).to have_received(:puts).with('Hello')
-    end
-
-    it 'excludes specified player' do
-      room.broadcast('Hello', except: alice)
-      expect(alice).not_to have_received(:puts)
-      expect(bob).to have_received(:puts).with('Hello')
-    end
   end
 end

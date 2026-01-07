@@ -2,6 +2,7 @@
 
 require 'zeitwerk'
 loader = Zeitwerk::Loader.for_gem
+loader.collapse("#{__dir__}/mud/concerns")
 loader.setup
 loader.eager_load_dir("#{__dir__}/mud/commands")
 

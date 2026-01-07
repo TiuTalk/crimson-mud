@@ -2,7 +2,9 @@
 
 module Mud
   class Room
-    attr_reader :name, :description, :players
+    include HasPlayers
+
+    attr_reader :name, :description
 
     def self.starting
       @starting ||= new(name: 'The Void', description: 'A dark, empty space. The beginning of all adventures.')
@@ -11,25 +13,6 @@ module Mud
     def initialize(name:, description:)
       @name = name
       @description = description
-      @players = Set.new
-      @players_mutex = Mutex.new
-    end
-
-    def add_player(player)
-      @players_mutex.synchronize { @players.add(player) }
-    end
-
-    def remove_player(player)
-      @players_mutex.synchronize { @players.delete(player) }
-    end
-
-    def broadcast(message, except: nil)
-      players = @players_mutex.synchronize { @players.dup }
-      players.each do |player|
-        next if player == except
-
-        player.puts(message)
-      end
     end
   end
 end
