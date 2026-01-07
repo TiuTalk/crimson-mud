@@ -17,17 +17,19 @@ Ruby MUD server targeting [TinyMUD](https://github.com/nickgammon/tinymudserver)
 
 ## Phase 2: World Foundation
 
-- [x] Room class (id, name, description, exits hash)
+- [x] Room class (name, description)
+- [ ] Room exits hash
 - [ ] In-memory world with hardcoded rooms (3-5 connected)
-- [ ] `look` - show current room description + exits
+- [x] `look` - show current room description
+- [ ] `look` - show exits
 
 ## Phase 3: Players
 
-- [ ] Player class (name, current_room)
+- [x] Player class (name, current_room)
 - [x] Player registry (track connected players)
 - [x] Login flow (name selection, no password)
-- [ ] Place player in starting room on connect
-- [ ] `look` - include other players in room
+- [x] Place player in starting room on connect
+- [x] `look` - include other players in room
 - [ ] `who` - list connected players
 
 ## Phase 4: Navigation
