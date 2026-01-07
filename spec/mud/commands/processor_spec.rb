@@ -3,13 +3,11 @@
 RSpec.describe Mud::Commands::Processor do
   subject(:processor) { described_class.new(player:) }
 
-  let(:player) { instance_double(Mud::Player, puts: nil, quit: nil, name: 'Alice') }
-  let(:server) { instance_double(Mud::Telnet::Server, broadcast: nil) }
+  let(:room) { instance_double(Mud::Room, broadcast: nil) }
+  let(:player) { instance_double(Mud::Player, puts: nil, quit: nil, name: 'Alice', room:) }
   let(:logger) { instance_double(Logger, debug: nil) }
 
-  before do
-    allow(Mud).to receive_messages(server:, logger:)
-  end
+  before { allow(Mud).to receive(:logger).and_return(logger) }
 
   describe '#process' do
     context 'with quit command' do
@@ -25,9 +23,9 @@ RSpec.describe Mud::Commands::Processor do
         expect(player).to have_received(:puts).with("&cYou say 'hello world'")
       end
 
-      it 'broadcasts to others' do
+      it 'broadcasts to room with player name' do
         processor.process('say hello world')
-        expect(server).to have_received(:broadcast).with("&cSomeone says 'hello world'", except: player)
+        expect(room).to have_received(:broadcast).with("&cAlice says 'hello world'", except: player)
       end
     end
 

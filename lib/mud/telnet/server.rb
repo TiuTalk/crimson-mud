@@ -8,33 +8,8 @@ module Mud
     class Server
       include Singleton
 
-      attr_reader :players
-
       def initialize
         @server = nil
-        @players = []
-        @players_mutex = Mutex.new
-      end
-
-      def add_player(player)
-        @players_mutex.synchronize { @players << player }
-      end
-
-      def remove_player(player)
-        @players_mutex.synchronize { @players.delete(player) }
-      end
-
-      def clear_players
-        @players_mutex.synchronize { @players.clear }
-      end
-
-      def broadcast(message, except: nil)
-        players = @players_mutex.synchronize { @players.dup }
-        players.each do |player|
-          next if player == except
-
-          player.puts(message)
-        end
       end
 
       def start
@@ -61,18 +36,13 @@ module Mud
 
       def handle_client(socket:)
         client = Client.new(socket:)
-        client.puts('Welcome to Crimson MUD!')
-        client.puts('What is your name?')
-        name = client.gets&.chomp
+        name = prompt_for_name(client)
         return if name.nil? || name.empty?
 
         player = Player.new(name:, room: Room.starting, client:)
-        log_connect(player)
-        add_player(player)
-        player.puts("Welcome, #{name}!")
-        player.run
+        run_player(player)
       ensure
-        remove_player(player) if player
+        Mud.world.remove_player(player) if player
         log_disconnect(client, player)
       end
 
@@ -80,6 +50,19 @@ module Mud
 
       def host = Mud.configuration.host
       def port = Mud.configuration.port
+
+      def prompt_for_name(client)
+        client.puts('Welcome to Crimson MUD!')
+        client.puts('What is your name?')
+        client.gets&.chomp
+      end
+
+      def run_player(player)
+        log_connect(player)
+        Mud.world.add_player(player)
+        player.puts("Welcome, #{player.name}!")
+        player.run
+      end
 
       def log_connect(player)
         Mud.logger.info("Connected: #{player.name} (#{player.remote_address})")

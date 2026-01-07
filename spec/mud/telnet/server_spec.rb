@@ -7,14 +7,13 @@ RSpec.describe Mud::Telnet::Server do
 
   let(:logger) { instance_double(Logger, info: nil, error: nil) }
   let(:tcp_server) { instance_double(TCPServer, close: nil, closed?: false) }
+  let(:world) { instance_double(Mud::World, add_player: nil, remove_player: nil) }
 
   before do
-    allow(Mud).to receive(:logger).and_return(logger)
+    allow(Mud).to receive_messages(logger:, world:)
     allow(TCPServer).to receive(:new).and_return(tcp_server)
     allow(tcp_server).to receive(:accept).and_raise(IOError)
   end
-
-  after { server.clear_players }
 
   describe '#start' do
     it 'binds socket and logs' do
@@ -28,48 +27,6 @@ RSpec.describe Mud::Telnet::Server do
     it 'closes server when running' do
       server.start
       expect(tcp_server).to have_received(:close)
-    end
-  end
-
-  describe '#add_player' do
-    let(:player) { instance_double(Mud::Player) }
-
-    it 'adds player to players list' do
-      server.add_player(player)
-      expect(server.players).to include(player)
-    end
-  end
-
-  describe '#remove_player' do
-    let(:player) { instance_double(Mud::Player) }
-
-    before { server.add_player(player) }
-
-    it 'removes player from players list' do
-      server.remove_player(player)
-      expect(server.players).not_to include(player)
-    end
-  end
-
-  describe '#broadcast' do
-    let(:alice) { instance_double(Mud::Player, puts: nil) }
-    let(:bob) { instance_double(Mud::Player, puts: nil) }
-
-    before do
-      server.add_player(alice)
-      server.add_player(bob)
-    end
-
-    it 'sends message to all players' do
-      server.broadcast('Hello')
-      expect(alice).to have_received(:puts).with('Hello')
-      expect(bob).to have_received(:puts).with('Hello')
-    end
-
-    it 'excludes specified player' do
-      server.broadcast('Hello', except: alice)
-      expect(alice).not_to have_received(:puts)
-      expect(bob).to have_received(:puts).with('Hello')
     end
   end
 
@@ -147,9 +104,14 @@ RSpec.describe Mud::Telnet::Server do
       end
     end
 
-    it 'removes player from registry on disconnect' do
+    it 'adds player to world' do
       server.handle_client(socket:)
-      expect(server.players).to be_empty
+      expect(world).to have_received(:add_player).with(instance_of(Mud::Player))
+    end
+
+    it 'removes player from world on disconnect' do
+      server.handle_client(socket:)
+      expect(world).to have_received(:remove_player).with(instance_of(Mud::Player))
     end
   end
 end

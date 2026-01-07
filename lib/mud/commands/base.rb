@@ -30,7 +30,7 @@ module Mud
         raise NotImplementedError, "#{self.class}#perform must be implemented"
       end
 
-      def server = Mud.server
+      def room = player.room
     end
   end
 end

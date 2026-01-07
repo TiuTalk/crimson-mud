@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe Mud::Commands::Say do
-  let(:player) { instance_double(Mud::Player, puts: nil) }
-  let(:server) { instance_double(Mud::Telnet::Server, broadcast: nil) }
-
-  before { allow(Mud).to receive(:server).and_return(server) }
+  let(:room) { instance_double(Mud::Room, broadcast: nil) }
+  let(:player) { instance_double(Mud::Player, puts: nil, name: 'Alice', room:) }
 
   it_behaves_like 'a registered command', 'say'
 
@@ -15,10 +13,10 @@ RSpec.describe Mud::Commands::Say do
       expect(player).to have_received(:puts).with("&cYou say 'hello'")
     end
 
-    it 'broadcasts to other players' do
+    it 'broadcasts to room with player name' do
       described_class.new(player:).perform('hello')
 
-      expect(server).to have_received(:broadcast).with("&cSomeone says 'hello'", except: player)
+      expect(room).to have_received(:broadcast).with("&cAlice says 'hello'", except: player)
     end
 
     it 'strips whitespace from message' do

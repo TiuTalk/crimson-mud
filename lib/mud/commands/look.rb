@@ -6,10 +6,26 @@ module Mud
       command :look
 
       def perform(_args)
-        player.puts(<<~OUTPUT.chomp)
-          &c#{player.room.name}&n
-          #{player.room.description}
+        player.puts(<<~OUTPUT.strip)
+          #{room_header}
+          #{room_description}
+          #{players_list}
         OUTPUT
+      end
+
+      private
+
+      def room_header
+        "&c#{room.name}&n"
+      end
+
+      def room_description
+        room.description
+      end
+
+      def players_list
+        others = room.players.reject { |p| p == player }
+        others.map { |p| "&y#{p.name} is here." }.join("\n")
       end
     end
   end
