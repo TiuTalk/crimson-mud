@@ -21,10 +21,35 @@ RSpec.describe Mud::Commands::Base do
     ensure
       Mud::Commands::Registry.unregister(:test2)
     end
+
+    it 'stores usage when provided' do
+      stub_const('UsageCommand', Class.new(described_class) { command :test, usage: 'test <arg>' })
+      expect(UsageCommand.usage).to eq('test <arg>')
+    end
+
+    it 'stores min_args when provided' do
+      stub_const('ArgsCommand', Class.new(described_class) { command :test, args: 2 })
+      expect(ArgsCommand.min_args).to eq(2)
+    end
+  end
+
+  describe '.validate' do
+    it 'registers validation methods' do
+      stub_const('ValidateCommand', Class.new(described_class) do
+        validate :check_one
+        validate :check_two
+      end)
+      expect(ValidateCommand.validations).to eq(%i[check_one check_two])
+    end
+
+    it 'inherits empty validations by default' do
+      stub_const('NoValidateCommand', Class.new(described_class))
+      expect(NoValidateCommand.validations).to eq([])
+    end
   end
 
   describe '.execute' do
-    let(:test_class) { Class.new(described_class) { def perform(args) = player.puts(args) } }
+    let(:test_class) { Class.new(described_class) { def perform = player.puts(args.join(' ')) } }
 
     it 'instantiates and calls instance execute' do
       test_class.execute(player, 'hello')
@@ -38,17 +63,55 @@ RSpec.describe Mud::Commands::Base do
   end
 
   describe '#execute' do
-    let(:test_class) { Class.new(described_class) { def perform(args) = player.puts(args) } }
-
-    it 'calls perform with args' do
-      test_class.new(player:).execute(args: 'test')
-      expect(player).to have_received(:puts).with('test')
+    it 'logs command execution' do
+      test_class = Class.new(described_class) { def perform = nil }
+      stub_const('TestCommand', test_class)
+      TestCommand.new(player:).execute
+      expect(logger).to have_received(:debug).with('Alice executing: TestCommand')
     end
 
-    it 'logs command execution' do
-      stub_const('TestCommand', test_class)
-      TestCommand.new(player:).execute(args: 'test')
-      expect(logger).to have_received(:debug).with('Alice executing: TestCommand')
+    context 'with usage and insufficient args' do
+      it 'shows usage when fewer args than min_args' do
+        test_class = Class.new(described_class) do
+          command :test, args: 2, usage: 'test <a> <b>'
+          def perform = player.puts('performed')
+        end
+        test_class.new(player:, args: 'one').execute
+        expect(player).to have_received(:puts).with('test <a> <b>')
+        expect(player).not_to have_received(:puts).with('performed')
+      end
+
+      it 'proceeds when enough args provided' do
+        test_class = Class.new(described_class) do
+          command :test, args: 2, usage: 'test <a> <b>'
+          def perform = player.puts('performed')
+        end
+        test_class.new(player:, args: 'one two').execute
+        expect(player).to have_received(:puts).with('performed')
+      end
+    end
+
+    context 'with validations' do
+      it 'halts on validation failure and shows error' do
+        test_class = Class.new(described_class) do
+          validate :always_fail
+          def perform = player.puts('performed')
+          def always_fail = 'Validation failed'
+        end
+        test_class.new(player:, args: 'test').execute
+        expect(player).to have_received(:puts).with('Validation failed')
+        expect(player).not_to have_received(:puts).with('performed')
+      end
+
+      it 'continues when validation returns nil' do
+        test_class = Class.new(described_class) do
+          validate :always_pass
+          def perform = player.puts('performed')
+          def always_pass = nil
+        end
+        test_class.new(player:, args: 'test').execute
+        expect(player).to have_received(:puts).with('performed')
+      end
     end
   end
 end

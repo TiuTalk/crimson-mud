@@ -3,34 +3,31 @@
 module Mud
   module Commands
     class Tell < Base
-      command :tell
+      command :tell, args: 2, usage: 'Tell whom what?'
 
-      def perform(args)
-        target_name, message = parse_args(args)
-        return unless message
+      validate :target_exists
+      validate :not_self
 
-        target = find_target(target_name)
-        return unless target
-
+      def perform
         player.puts("&mYou tell #{target.name}, '#{message}'")
         target.puts("&m#{player.name} tells you, '#{message}'")
       end
 
       private
 
-      def parse_args(args)
-        parts = args.strip.split(/\s+/, 2)
-        return player.puts('Tell whom what?') if parts.size < 2
+      def target_name = args[0]
+      def message = args[1..].join(' ')
 
-        parts
+      def target
+        @target ||= Mud.world.players.find { |p| p.name.casecmp?(target_name) }
       end
 
-      def find_target(name)
-        target = Mud.world.players.find { |p| p.name.casecmp?(name) }
-        return player.puts('No player by that name is connected.') unless target
-        return player.puts('Talking to yourself again?') if target == player
+      def target_exists
+        'No player by that name is connected.' unless target
+      end
 
-        target
+      def not_self
+        'Talking to yourself again?' if target == player
       end
     end
   end

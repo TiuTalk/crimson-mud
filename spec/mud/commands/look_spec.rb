@@ -10,9 +10,8 @@ RSpec.describe Mud::Commands::Look do
   it_behaves_like 'a registered command', 'look'
 
   describe '#perform' do
-    before { command.perform('') }
-
     it 'outputs room name and description' do
+      command.perform
       expect(player).to have_received(:puts).with("&cTest Room&n\nA test description.")
     end
 
@@ -21,6 +20,7 @@ RSpec.describe Mud::Commands::Look do
       let(:players_in_room) { Set[bob] }
 
       it 'includes other players in output' do
+        command.perform
         expect(player).to have_received(:puts).with("&cTest Room&n\nA test description.\n&yBob is here.")
       end
     end

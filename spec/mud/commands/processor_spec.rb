@@ -35,5 +35,17 @@ RSpec.describe Mud::Commands::Processor do
         expect(player).to have_received(:puts).with('Unknown command: foo')
       end
     end
+
+    context 'with empty input' do
+      it 'does nothing' do
+        processor.process('')
+        expect(player).not_to have_received(:puts)
+      end
+
+      it 'does nothing for whitespace only' do
+        processor.process('   ')
+        expect(player).not_to have_received(:puts)
+      end
+    end
   end
 end

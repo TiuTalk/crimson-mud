@@ -10,21 +10,16 @@ module Mud
       end
 
       def process(input)
-        command, args = parse(input)
+        return if input.strip.empty?
+
+        command, args = input.strip.split(/\s+/, 2)
         command_class = Registry.lookup(command.downcase)
 
         if command_class
-          command_class.new(player:).execute(args:)
+          command_class.execute(player, args)
         else
           player.puts("Unknown command: #{command}")
         end
-      end
-
-      private
-
-      def parse(input)
-        parts = input.strip.split(' ', 2)
-        [parts[0], parts[1].to_s]
       end
     end
   end

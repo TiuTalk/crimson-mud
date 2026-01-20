@@ -5,7 +5,7 @@ module Mud
     class Look < Base
       command :look
 
-      def perform(_args)
+      def perform
         player.puts(<<~OUTPUT.strip)
           #{room_header}
           #{room_description}
