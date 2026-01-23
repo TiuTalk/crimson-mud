@@ -56,6 +56,7 @@ module Mud
       private
 
       attr_reader :player, :args
+      alias actor player
 
       def perform
         raise NotImplementedError, "#{self.class}#perform must be implemented"

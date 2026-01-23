@@ -38,10 +38,20 @@ RSpec.describe Mud::Commands::Tell do
   end
 
   describe '#perform' do
-    it 'sends messages to both sender and target' do
+    before { allow(Mud::Actions::Tell).to receive(:execute) }
+
+    it 'delegates to Actions::Tell' do
       command.perform
-      expect(alice).to have_received(:puts).with("&mYou tell Bob, 'hello there'")
-      expect(bob).to have_received(:puts).with("&mAlice tells you, 'hello there'")
+      expect(Mud::Actions::Tell).to have_received(:execute).with(actor: alice, target: bob, message: 'hello there')
+    end
+
+    context 'with color codes in message' do
+      let(:args) { 'Bob &rhello' }
+
+      it 'strips color codes' do
+        command.perform
+        expect(Mud::Actions::Tell).to have_received(:execute).with(actor: alice, target: bob, message: 'hello')
+      end
     end
   end
 end

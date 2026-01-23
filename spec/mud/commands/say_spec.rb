@@ -20,10 +20,11 @@ RSpec.describe Mud::Commands::Say do
   end
 
   describe '#perform' do
-    it 'echoes to player and broadcasts to room' do
+    before { allow(Mud::Actions::Say).to receive(:execute) }
+
+    it 'delegates to Actions::Say' do
       command.perform
-      expect(player).to have_received(:puts).with("&cYou say 'hello'")
-      expect(room).to have_received(:broadcast).with("&cAlice says 'hello'", except: player)
+      expect(Mud::Actions::Say).to have_received(:execute).with(actor: player, message: 'hello')
     end
 
     context 'with color codes in message' do
@@ -31,7 +32,7 @@ RSpec.describe Mud::Commands::Say do
 
       it 'strips color codes' do
         command.perform
-        expect(player).to have_received(:puts).with("&cYou say 'hello'")
+        expect(Mud::Actions::Say).to have_received(:execute).with(actor: player, message: 'hello')
       end
     end
   end

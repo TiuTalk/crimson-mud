@@ -8,8 +8,7 @@ module Mud
       validate :requires_message
 
       def perform
-        player.puts("&cYou say '#{message}'")
-        room.broadcast("&c#{player.name} says '#{message}'", except: player)
+        Actions::Say.execute(actor:, message:)
       end
 
       private

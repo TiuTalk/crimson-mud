@@ -11,9 +11,6 @@ Targets [TinyMUD](https://github.com/nickgammon/tinymudserver) feature parity wi
 ## Commands
 
 ```bash
-# Run server (telnet 0.0.0.0:4000)
-bundle exec bin/server
-
 # Tests
 bundle exec rspec
 bundle exec rspec spec/file_spec.rb
@@ -40,6 +37,13 @@ bundle exec rubocop --format=simple --autocorrect-all
 - `Mud::Commands::Base` - Inherit to create commands, use `command :keyword` DSL to register
 - `Mud::Commands::Registry` - Stores commands, supports abbreviations via `Abbrev`
 - `Mud::Commands::Processor` - Parses input, looks up command in Registry, executes
+
+### Actions
+- `Mud::Actions::Base` - Inherit, implement `#perform` with action-specific params
+- `.execute(actor:, **args)` → `new(actor:).perform(**args)`
+- Base handles `actor:` init, provides `#room` helper via `actor.room`
+- Commands parse/validate, then delegate to Actions
+- Naming: `actor:` (who performs), `target:` (who receives), `message:`
 
 ### World & Rooms
 - `Mud::World` - Singleton for centralized player/room tracking

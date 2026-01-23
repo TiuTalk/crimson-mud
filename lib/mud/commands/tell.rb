@@ -8,17 +8,15 @@ module Mud
       validate :target_exists
 
       def perform
-        player.puts("&mYou tell #{target.name}, '#{message}'")
-        target.puts("&m#{player.name} tells you, '#{message}'")
+        Actions::Tell.execute(actor:, target:, message:)
       end
 
       private
 
-      def target_name = args[0]
-      def message = args[1..].join(' ')
+      def message = Color.strip(args[1..].join(' '))
 
       def target
-        @target ||= Mud.world.players(except: player).find { |p| p.name.casecmp?(target_name) }
+        @target ||= Mud.world.players(except: player).find { |p| p.name.casecmp?(args[0]) }
       end
 
       def target_exists
