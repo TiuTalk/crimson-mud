@@ -5,6 +5,8 @@ module Mud
     class Say < Base
       command :say
 
+      validate :requires_message
+
       def perform
         player.puts("&cYou say '#{message}'")
         room.broadcast("&c#{player.name} says '#{message}'", except: player)
@@ -13,6 +15,10 @@ module Mud
       private
 
       def message = Color.strip(args.join(' '))
+
+      def requires_message
+        'What do you want to say?' if args.empty?
+      end
     end
   end
 end

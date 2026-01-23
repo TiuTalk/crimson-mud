@@ -41,7 +41,7 @@ Ruby MUD server targeting [TinyMUD](https://github.com/nickgammon/tinymudserver)
 ## Phase 5: Communication
 
 - [x] `say <message>` - broadcast to current room
-- [ ] `tell <player> <message>` - private message
+- [x] `tell <player> <message>` - private message
 
 ## Phase 6: Inventory (Future)
 

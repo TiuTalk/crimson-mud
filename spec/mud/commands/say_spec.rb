@@ -9,6 +9,16 @@ RSpec.describe Mud::Commands::Say do
 
   it_behaves_like 'a registered command', 'say'
 
+  describe '#validate' do
+    it { is_expected.to have_attributes(validate: nil) }
+
+    context 'when message is empty' do
+      let(:args) { '' }
+
+      it { is_expected.to have_attributes(validate: 'What do you want to say?') }
+    end
+  end
+
   describe '#perform' do
     it 'echoes to player and broadcasts to room' do
       command.perform

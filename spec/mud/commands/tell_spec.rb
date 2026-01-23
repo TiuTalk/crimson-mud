@@ -7,7 +7,11 @@ RSpec.describe Mud::Commands::Tell do
   let(:bob) { instance_double(Mud::Player, puts: nil, name: 'Bob') }
   let(:args) { 'Bob hello there' }
 
-  before { allow(Mud.world).to receive(:players).and_return([alice, bob]) }
+  before do
+    allow(Mud.world).to receive(:players) do |except: nil|
+      [alice, bob].reject { |p| p == except }
+    end
+  end
 
   it_behaves_like 'a registered command', 'tell'
 
@@ -23,7 +27,7 @@ RSpec.describe Mud::Commands::Tell do
     context 'when telling self' do
       let(:args) { 'Alice hello' }
 
-      it { is_expected.to have_attributes(validate: 'Talking to yourself again?') }
+      it { is_expected.to have_attributes(validate: 'No player by that name is connected.') }
     end
 
     context 'with case-insensitive name' do
