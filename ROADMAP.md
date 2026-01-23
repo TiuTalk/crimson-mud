@@ -2,10 +2,10 @@
 
 ## Scope
 
-Ruby MUD server targeting [TinyMUD](https://github.com/nickgammon/tinymudserver) feature parity with CircleMUD-style command output formatting.
+CircleMUD / DikuMUD-inspired Ruby MUD server implementing classic MUD features.
 
-**Core goals:** rooms, navigation, multiplayer, communication
-**Future goals:** inventory, combat, persistence
+**Core goals:** rooms, navigation, multiplayer, communication, zones, mobs
+**Future goals:** inventory, combat, persistence, skills
 **Non-goals:** admin commands, authentication, building commands
 
 ## Phase 1: Command System
@@ -43,23 +43,39 @@ Ruby MUD server targeting [TinyMUD](https://github.com/nickgammon/tinymudserver)
 - [x] `say <message>` - broadcast to current room
 - [x] `tell <player> <message>` - private message
 
-## Phase 6: Inventory (Future)
+## Phase 6: Zones/Areas
+
+- [ ] Zone class (id, name, rooms, reset timer)
+- [ ] Load zones from data files
+- [ ] Zone reset mechanism
+- [ ] Connect rooms across zones
+
+## Phase 7: NPCs/Mobs
+
+- [ ] Mobile class (name, description, stats)
+- [ ] Mob spawning on zone reset
+- [ ] Basic AI (wandering, returning home)
+- [ ] Aggro behavior
+- [ ] `look` - show mobs in room
+
+## Phase 8: Inventory (Future)
 
 - [ ] Object class (id, name, description, location)
 - [ ] `inventory` - list carried objects
 - [ ] `get <object>` - pick up from room
 - [ ] `drop <object>` - leave in room
 
-## Phase 7: Combat (Future)
+## Phase 9: Combat (Future)
 
 - [ ] HP/stats on players
-- [ ] `kill <player>` - basic combat
+- [ ] `kill <target>` - initiate combat
+- [ ] Combat rounds + damage
 - [ ] `flee` - escape combat
 - [ ] Death + respawn
 
-## Phase 8: Persistence (Future)
+## Phase 10: Persistence (Future)
 
 - [ ] SQLite database + migrations
-- [ ] Save/load rooms
+- [ ] Save/load zones + rooms
 - [ ] Save/load players
-- [ ] Save/load objects
+- [ ] Save/load objects + mobs

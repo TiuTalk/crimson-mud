@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Multi-User Dungeon (MUD) server written in Ruby. Uses Zeitwerk for autoloading.
 
-Targets [TinyMUD](https://github.com/nickgammon/tinymudserver) feature parity with [CircleMUD](https://www.circlemud.org/)-style output formatting. See [ROADMAP.md](ROADMAP.md) for goals.
+[CircleMUD](https://github.com/Yuffster/CircleMUD) / [DikuMUD](https://github.com/Seifert69/DikuMUD)-inspired with classic output formatting. See [ROADMAP.md](ROADMAP.md) for goals.
 
 ## Commands
 

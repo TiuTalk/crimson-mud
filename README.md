@@ -2,7 +2,7 @@
 
 [![Build](https://github.com/TiuTalk/crimson-mud/actions/workflows/main.yml/badge.svg)](https://github.com/TiuTalk/crimson-mud/actions/workflows/main.yml)
 
-Ruby MUD server targeting [TinyMUD](https://github.com/nickgammon/tinymudserver) feature parity with [CircleMUD](https://www.circlemud.org/)-style output formatting.
+[CircleMUD](https://github.com/Yuffster/CircleMUD) / [DikuMUD](https://github.com/Seifert69/DikuMUD)-inspired Ruby MUD server with classic output formatting.
 
 ## Requirements
 
